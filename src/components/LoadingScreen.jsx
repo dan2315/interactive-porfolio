@@ -1,21 +1,23 @@
-import { useProgress } from "@react-three/drei";
+import { useAssetManagerContext } from '../contexts/AssetManagerContext';
 import styles from './LoadingScreen.module.css';
 import { useEffect, useState } from "react";
 
 function LoadingScreen() {
-    const { active, progress, errors, item, loaded, total } = useProgress();
+    const { totalProgress , isComplete, assets, loadedCount, assetCount } = useAssetManagerContext();
     const [isVisible, setIsVisible] = useState(true);
     const [displayProgress, setDisplayProgress] = useState(0);
 
     const frameCount = 4;
-    const currentFrame = Math.min(Math.floor((progress / 100) * frameCount), frameCount - 1);
+    const currentFrame = Math.min(Math.floor((totalProgress / 100) * frameCount), frameCount - 1);
     const frameWidth = 32;
     const loadingBarLengthInTiles = 12;
 
-    console.log(`Loading item: ${progress} ${item} (${loaded} of ${total} bytes loaded)`);
+    useEffect(() => {
+        console.log(`Loading: ${totalProgress} (${loadedCount} of ${assetCount} assets loaded)`);
+    }, [totalProgress]);
 
     useEffect(() => {
-        const targetProgress = progress;
+        const targetProgress = totalProgress;
         const step = () => {
             setDisplayProgress(prev => {
                 const diff = targetProgress - prev;
@@ -26,16 +28,16 @@ function LoadingScreen() {
 
         const interval = setInterval(step, 16);
         return () => clearInterval(interval);
-    }, [progress]);
+    }, [totalProgress]);
 
     useEffect(() => {
-        if (progress === 100 && !active) {
+        if (totalProgress === 100 && isComplete) {
             const timer = setTimeout(() => {
                 setIsVisible(false);
             }, 500);
             return () => clearTimeout(timer);
         }
-    }, [progress, active]);
+    }, [totalProgress, isComplete]);
 
     if (!isVisible) return null;
 
@@ -52,7 +54,7 @@ function LoadingScreen() {
             </p>
             <div>
                 <div className={styles.loadingBar}>
-                    <div className={styles.loadingBarFill} style={{width: `${(progress / 100) * loadingBarLengthInTiles * frameWidth}px`}}/>
+                    <div className={styles.loadingBarFill} style={{width: `${(totalProgress / 100) * loadingBarLengthInTiles * frameWidth}px`}}/>
                 </div>
                 <div className={styles.pacman} style={{backgroundPositionX: `-${currentFrame * frameWidth}px`}}/>
             </div>
