@@ -40,8 +40,6 @@ function App() {
             url="/models/scene.glb" 
           />
 
-        
-
           <Html3d>
             <Navbar/>
             <Router>

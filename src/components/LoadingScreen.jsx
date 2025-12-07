@@ -4,17 +4,31 @@ import { useEffect, useState } from "react";
 
 function LoadingScreen() {
     const { totalProgress , isComplete, assets, loadedCount, assetCount } = useAssetManagerContext();
+    // const [totalProgress, setTotalProgress] = useState(0);
+    // const [isComplete, setIsComplete] = useState(false);
+
     const [isVisible, setIsVisible] = useState(true);
     const [displayProgress, setDisplayProgress] = useState(0);
 
-    const frameCount = 4;
-    const currentFrame = Math.min(Math.floor((totalProgress / 100) * frameCount), frameCount - 1);
-    const frameWidth = 32;
+    const pacmanFrames = [0, 1, 2, 1];
     const loadingBarLengthInTiles = 12;
+    const currentFrame = Math.round(displayProgress / ((100 / loadingBarLengthInTiles) / pacmanFrames.length)) % pacmanFrames.length;
+    const frameWidth = 64;
+    const barWidth = loadingBarLengthInTiles * frameWidth;
+    // console.log("Progress:", totalProgress, "Loaded:", loadedCount, "of", assetCount);
 
-    useEffect(() => {
-        console.log(`Loading: ${totalProgress} (${loadedCount} of ${assetCount} assets loaded)`);
-    }, [totalProgress]);
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setTotalProgress(prev => {
+    //             const next = prev + 12;
+    //             return Math.min(next, 100);
+    //         });
+    //         if (totalProgress >= 100) {
+    //             setIsComplete(true);
+    //         }
+    //     }, 1000);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     useEffect(() => {
         const targetProgress = totalProgress;
@@ -32,10 +46,7 @@ function LoadingScreen() {
 
     useEffect(() => {
         if (totalProgress === 100 && isComplete) {
-            const timer = setTimeout(() => {
-                setIsVisible(false);
-            }, 500);
-            return () => clearTimeout(timer);
+            setIsVisible(false);
         }
     }, [totalProgress, isComplete]);
 
@@ -43,20 +54,26 @@ function LoadingScreen() {
 
     return (
         <div className={styles.loadingScreen}>
-            <h1>
-                Danil Prokhorenko
-            </h1>
-            <h2>
-                Software Engineer
-            </h2>
-            <p>
-                Bringing code to life... {displayProgress}%
-            </p>
-            <div>
-                <div className={styles.loadingBar}>
-                    <div className={styles.loadingBarFill} style={{width: `${(totalProgress / 100) * loadingBarLengthInTiles * frameWidth}px`}}/>
+            <div className={styles.flexContainer} style={{ width: `${barWidth + 20}px` }}>
+                <h1 className={styles.writings}>
+                    Danil Prokhorenko
+                </h1>
+                <h2 className={styles.writings}>
+                    Software Engineer
+                </h2>
+                <p className={styles.writings}>
+                    Bringing code to life...
+                </p>
+                <div>
+                    <div className={styles.loadingBar} style={{
+                        width: `${barWidth}px`
+                    }}>
+                    <div className={styles.pacman} style={{
+                        backgroundPositionX: `-${pacmanFrames[currentFrame] * frameWidth}px`,
+                        left: `${barWidth * displayProgress/100}px`
+                    }}/>
+                    </div>
                 </div>
-                <div className={styles.pacman} style={{backgroundPositionX: `-${currentFrame * frameWidth}px`}}/>
             </div>
         </div>
     );

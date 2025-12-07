@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fontsource/montserrat": "^5.2.8",
     "@react-spring/three": "^10.0.3",
     "@react-spring/web": "^10.0.3",
     "@react-three/drei": "^10.7.7",

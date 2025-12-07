@@ -1,14 +1,11 @@
-// hooks/useAssetManager.js
 import { useState, useCallback, useEffect, useMemo } from 'react';
 
 export function useAssetManager() {
   const [assets, setAssets] = useState({});
   const [isComplete, setIsComplete] = useState(false);
 
-  // Register a new asset to track
   const registerAsset = useCallback((id, metadata = {}) => {
     setAssets(prev => {
-      // Don't re-register if already exists
       if (prev[id]) return prev;
       
       return {
@@ -26,7 +23,6 @@ export function useAssetManager() {
     });
   }, []);
 
-  // Update asset progress
   const updateAssetProgress = useCallback((id, { loaded, total, progress }) => {
     setAssets(prev => ({
       ...prev,
@@ -40,7 +36,6 @@ export function useAssetManager() {
     }));
   }, []);
 
-  // Mark asset as loaded
   const setAssetLoaded = useCallback((id) => {
     setAssets(prev => ({
       ...prev,
@@ -75,7 +70,6 @@ export function useAssetManager() {
     return (loadedBytes / totalBytes) * 100;
   }, [assets]);
 
-  // Get byte statistics
   const byteStats = useMemo(() => {
     const assetArray = Object.values(assets);
     const totalBytes = assetArray.reduce((sum, asset) => sum + (asset.total || 0), 0);
@@ -89,7 +83,6 @@ export function useAssetManager() {
     };
   }, [assets]);
 
-  // Calculate counts
   const assetCount = useMemo(() => Object.keys(assets).length, [assets]);
   const loadedCount = useMemo(() => 
     Object.values(assets).filter(a => a.status === 'loaded').length, 
@@ -100,7 +93,6 @@ export function useAssetManager() {
     [assets]
   );
 
-  // Check if all assets are loaded
   useEffect(() => {
     const assetArray = Object.values(assets);
     if (assetArray.length === 0) {
