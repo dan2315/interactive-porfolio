@@ -15,7 +15,7 @@ function LoadingScreen() {
     const currentFrame = Math.round(displayProgress / ((100 / loadingBarLengthInTiles) / pacmanFrames.length)) % pacmanFrames.length;
     const frameWidth = 64;
     const barWidth = loadingBarLengthInTiles * frameWidth;
-    // console.log("Progress:", totalProgress, "Loaded:", loadedCount, "of", assetCount);
+    console.log("Progress:", totalProgress, "Loaded:", loadedCount, "of", assetCount);
 
     // useEffect(() => {
     //     const interval = setInterval(() => {
@@ -45,7 +45,7 @@ function LoadingScreen() {
     }, [totalProgress]);
 
     useEffect(() => {
-        if (totalProgress === 100 && isComplete) {
+        if (totalProgress >= 100 && isComplete) {
             setIsVisible(false);
         }
     }, [totalProgress, isComplete]);
