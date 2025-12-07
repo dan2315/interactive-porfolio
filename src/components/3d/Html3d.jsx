@@ -2,7 +2,6 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/Addons.js';
-import * as THREE from 'three';
 
 function Html3d({ position = [0,0,0.2], rotation = [0,0,0], children }) {
     const { camera, gl, scene, size } = useThree();
@@ -46,6 +45,13 @@ function Html3d({ position = [0,0,0.2], rotation = [0,0,0], children }) {
             css3dRenderer.domElement.remove()
         }
     }, [])
+
+    useEffect(() => {
+        if (rendererRef.current) {
+            rendererRef.current.setSize(size.width, size.height);
+        }
+    }, [size.width, size.height]);
+
 
     useFrame(() => {
         if (rendererRef.current) {
