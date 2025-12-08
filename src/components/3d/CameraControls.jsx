@@ -1,13 +1,13 @@
 import { OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
 
-function CameraControls() {
+function CameraControls({ref}) {
   return (
     <OrbitControls
       makeDefault
       enableDamping={true}
       dampingFactor={0.05}
-
+      ref={ref}
       mouseButtons={{
         LEFT: THREE.MOUSE.NONE,
         MIDDLE: THREE.MOUSE.ROTATE,

@@ -15,7 +15,7 @@ function LoadingScreen() {
     const currentFrame = Math.round(displayProgress / ((100 / loadingBarLengthInTiles) / pacmanFrames.length)) % pacmanFrames.length;
     const frameWidth = 64;
     const barWidth = loadingBarLengthInTiles * frameWidth;
-    console.log("Progress:", totalProgress, "Loaded:", loadedCount, "of", assetCount);
+    // console.log("Progress:", totalProgress, "Loaded:", loadedCount, "of", assetCount);
 
     // useEffect(() => {
     //     const interval = setInterval(() => {
@@ -46,14 +46,14 @@ function LoadingScreen() {
 
     useEffect(() => {
         if (totalProgress >= 100 && isComplete) {
-            setIsVisible(false);
+            setTimeout(() => {
+                setIsVisible(false);
+            }, 500);
         }
     }, [totalProgress, isComplete]);
 
-    if (!isVisible) return null;
-
     return (
-        <div className={styles.loadingScreen}>
+        <div className={`${styles.loadingScreen} ${!isVisible ? styles.fadeOut : ""}`}>
             <div className={styles.flexContainer} style={{ width: `${barWidth + 20}px` }}>
                 <h1 className={styles.writings}>
                     Danil Prokhorenko

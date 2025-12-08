@@ -1,0 +1,16 @@
+.pageContainer {
+    padding-left: 300px;
+    padding-right: 300px;
+}
+
+.experiencesRow {
+    display: flex;
+}
+
+.header {
+    margin: 5px;
+}
+
+.highlights {
+    margin: 10px;
+}

@@ -3,22 +3,19 @@ import { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/Addons.js';
 
-function Html3d({ position = [0,0,0.2], rotation = [0,0,0], children }) {
+function Html3d({ position, rotation, scale, children }) {
     const { camera, gl, scene, size } = useThree();
     const css3dRef = useRef();
     const rendererRef = useRef();
     const rootRef = useRef();
-    const occlusionPlaneRef = useRef();
 
 
     useEffect(() => {
         const css3dRenderer = new CSS3DRenderer();
-        css3dRenderer.setSize(size.width, size.height);
         css3dRenderer.domElement.style.position = 'absolute';
         css3dRenderer.domElement.style.top = '0px';
         css3dRenderer.domElement.style.pointerEvents = 'none';
 
-        console.log("css3dRenderer initialized", gl.domElement.parentNode);
         const parent = gl.domElement.parentElement;
         if (parent) {
             parent.appendChild(css3dRenderer.domElement);
@@ -35,7 +32,7 @@ function Html3d({ position = [0,0,0.2], rotation = [0,0,0], children }) {
         const css3dObject = new CSS3DObject(element)
         css3dObject.position.set(...position)
         css3dObject.rotation.set(...rotation)
-        css3dObject.scale.set(0.01, 0.01, 0.01);
+        css3dObject.scale.set(...scale);
         
         scene.add(css3dObject)
         css3dRef.current = css3dObject

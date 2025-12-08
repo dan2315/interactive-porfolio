@@ -1,0 +1,62 @@
+{
+  "experiences": [
+    {
+      "title": "Frontend Developer",
+      "company": "Galaxy Sciences",
+      "employmentType": "Part-time",
+      "startDate": "Apr 2025",
+      "endDate": " Oct 2025",
+      "duration": "7 months",
+      "location": "Remote",
+      "technologies": ["JS", "React"],
+      "highlights": [
+        "Developed web application replicating Reigns game logic",
+        "Built web editor for narrative card sequences",
+        "Implemented chat module for application"
+      ]
+    },
+    {
+      "title": "Minecraft Mod Developer",
+      "company": "Unreal Frontiers Project",
+      "employmentType": "Self-employed",
+      "startDate": "Jun 2024",
+      "endDate": " Jul 2025",
+      "duration": "1 year 2 months",
+      "location": "Remote",
+      "technologies": [
+        ".NET",
+        "Avalonia UI",
+        "Node.js",
+        "Express",
+        "Java",
+        "Minecraft Forge"
+      ],
+      "highlights": [
+        "Built custom Minecraft launcher in .NET using Avalonia UI with multi-version update support",
+        "Created Node.js/Express backend for authentication and file versioning",
+        "Developed comprehensive PvP game management system with lobby voting and dynamic dimension creation",
+        "Implemented repeatable lobby-to-game state cycles",
+        "Integrated with Valkyrien Skies mod despite stability challenges"
+      ]
+    },
+    {
+      "title": "Unity Developer",
+      "company": "Singularity Lab",
+      "employmentType": "Full-time",
+      "startDate": "Sep 2021",
+      "endDate": "Nov 2022",
+      "duration": "1 year 3 months",
+      "location": "Almaty, Kazakhstan",
+      "technologies": [
+        "Unity",
+        "C#",
+        "Ethereum"
+      ],
+      "highlights": [
+        "Created mobile games across multiple genres (incremental-idle, runner, top-down shooter)",
+        "Integrated advertisement and map SDKs into game projects",
+        "Implemented Ethereum network transactions into custom GTA V server"
+      ]
+    }
+  ]
+}

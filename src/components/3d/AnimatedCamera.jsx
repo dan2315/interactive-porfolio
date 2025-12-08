@@ -1,29 +1,22 @@
 import { useThree } from "@react-three/fiber";
-import { useSpring } from '@react-spring/web';
-import { a } from '@react-spring/three';
 import { useEffect } from "react";
 
 const CAMERA_VIEWS = {
-  home:  { position: [5, 5, 5], lookAt: [0, 0, 0] },
+  initial:  { position: [-33.491, 5.47, 6.9], lookAt: [-33.23, 5.47, 6.45] },
   top:   { position: [0, 10, 0], lookAt: [0, 0, 0] },
   side:  { position: [-8, 2, 0], lookAt: [0, 0, 0] },
   close: { position: [2, 1, 2], lookAt: [0, 1, 0] },
 };
 
-function AnimatedCamera({ view }) {
+function AnimatedCamera({ view, controlRef }) {
   const { camera } = useThree();
-
-  const { position } = useSpring({
-    position: CAMERA_VIEWS[view].position,
-    config: { mass: 1, tension: 120, friction: 26 },
-  });
-
+  console.log("Camera position", camera)
   useEffect(() => {
-    const target = CAMERA_VIEWS[view].lookAt;
-    camera.lookAt(...target);
-  }, [camera, view]);
-
-  return <a.perspectiveCamera position={position} />;
+    camera.position.set(CAMERA_VIEWS[view].position[0], CAMERA_VIEWS[view].position[1], CAMERA_VIEWS[view].position[2])
+    console.log(camera)
+    controlRef.current.target.set(CAMERA_VIEWS[view].lookAt[0], CAMERA_VIEWS[view].lookAt[1], CAMERA_VIEWS[view].lookAt[2])
+  })
+  return <perspectiveCamera position={CAMERA_VIEWS[view].position} lookAt={CAMERA_VIEWS[view].lookAt}/>;
 }
 
 export default AnimatedCamera;

@@ -1,0 +1,94 @@
+{
+    "projects": [
+        {
+            "title": "Portfolio website",
+            "technologies": [
+                "React",
+                "Threejs",
+                "ASP.NET"
+            ],
+            "repositories": [
+                "https://github.com/dan2315/interactive-porfolio"
+            ]
+        },
+        {
+            "title": "Job Compass",
+            "technologies": [
+                "React"
+            ]
+        },
+        {
+            "title": "Minecraft Launcher",
+            "technologies": [
+                "C#",
+                "JS",
+                ".NET",
+                "Avalonia UI",
+                "NodeJS",
+                "Express"
+            ]
+        },
+        {
+            "title": "PvP session based gamemode for modded minecraft",
+            "technologies": [
+                "Java",
+                "Forge"
+            ]
+        },
+        {
+            "title": "GTA V custom server cryptocurrency integration",
+            "technologies": [
+                "Solidity",
+                "JS",
+                "RageMP",
+                "React"
+            ]
+        },
+        {
+            "title": "Location based idler",
+            "technologies": [
+                "C#",
+                "Unity",
+                "OpenStreets SDK"
+            ]
+        },
+        {
+            "title": "Lumberjack idler",
+            "technologies": [
+                "C#",
+                "Unity"
+            ]
+        },
+        {
+            "title": "Raft idler",
+            "technologies": [
+                "C#",
+                "Unity"
+            ]
+        },
+        {
+            "title": "Top down shooter",
+            "technologies": [
+                "C#",
+                "Unity"
+            ]
+        },
+        {
+            "title": "Morph runner",
+            "technologies": [
+                "C#",
+                "Unity"
+            ]
+        },
+        {
+            "title": "Spike-N-Ball",
+            "technologies": [
+                "C#",
+                "Unity"
+            ],
+            "repositories": [
+                "https://github.com/gylesis/Spike-N-Ball/tree/main"
+            ]
+        }
+    ]
+}
