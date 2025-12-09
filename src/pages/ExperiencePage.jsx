@@ -1,6 +1,5 @@
 import styles from "./ExperiencePage.module.css"
 import data from "../data/experiences.json"
-import { useState } from "react";
 
 export default function ExperiencePage() {
     return (

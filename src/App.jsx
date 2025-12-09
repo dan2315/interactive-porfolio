@@ -11,6 +11,7 @@ import Html3d from './components/3d/Html3d';
 import GLTFModel from './components/3d/GLTFModel';
 import LoadingScreen from './components/LoadingScreen';
 import { AssetManagerProvider } from './contexts/AssetManagerContext';
+import LeetCodePage from './pages/LeetCodePage';
 
 
 function App() {
@@ -48,6 +49,7 @@ function App() {
                 <Navbar/>
                 <Routes>
                   <Route path="/experiences" element={<ExperiencePage />} />
+                  <Route path="/leetcode" element={<LeetCodePage/>} />
                 </Routes>
               </Router>
             </div>

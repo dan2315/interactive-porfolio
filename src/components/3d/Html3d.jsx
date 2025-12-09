@@ -1,7 +1,9 @@
 import { useFrame, useThree } from '@react-three/fiber';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/Addons.js';
+import { queryClient } from '../..';
 
 function Html3d({ position, rotation, scale, children }) {
     const { camera, gl, scene, size } = useThree();
@@ -26,7 +28,13 @@ function Html3d({ position, rotation, scale, children }) {
         element.style.pointerEvents = 'auto'
 
         const root = createRoot(element);
-        root.render(<div>{children}</div>);
+        root.render(
+            <QueryClientProvider client={queryClient}>
+                <div>
+                    {children}
+                </div>
+            </QueryClientProvider>);
+
         rootRef.current = root;
         
         const css3dObject = new CSS3DObject(element)

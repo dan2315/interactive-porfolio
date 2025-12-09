@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import styles from "./Navbar.module.css"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() { 
     const navButtons = [
@@ -13,6 +13,9 @@ export default function Navbar() {
     const navigate = useNavigate();
     const location = useLocation();
 
+    useEffect(() => {
+        navigate(`/${navButtons[0].id}`)
+    }, [])
     const selectedPage = location.pathname.replace("/", "") || "experiences";
 
     return (

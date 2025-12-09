@@ -10,10 +10,8 @@ const CAMERA_VIEWS = {
 
 function AnimatedCamera({ view, controlRef }) {
   const { camera } = useThree();
-  console.log("Camera position", camera)
   useEffect(() => {
     camera.position.set(CAMERA_VIEWS[view].position[0], CAMERA_VIEWS[view].position[1], CAMERA_VIEWS[view].position[2])
-    console.log(camera)
     controlRef.current.target.set(CAMERA_VIEWS[view].lookAt[0], CAMERA_VIEWS[view].lookAt[1], CAMERA_VIEWS[view].lookAt[2])
   })
   return <perspectiveCamera position={CAMERA_VIEWS[view].position} lookAt={CAMERA_VIEWS[view].lookAt}/>;
