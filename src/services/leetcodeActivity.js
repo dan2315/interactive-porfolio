@@ -15,5 +15,6 @@ function leetcodeRequest(path) {
 leetcode.getUserStat = async () => leetcodeRequest("profile");
 leetcode.getRecentSubmissions = async () => leetcodeRequest("submissions");
 leetcode.getActivityCalendar = async () => leetcodeRequest("activity");
+leetcode.getLanguagesData = async () => leetcodeRequest("languages");
 
 export default leetcode;

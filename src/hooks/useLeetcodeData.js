@@ -8,6 +8,12 @@ function useLeetCodeData() {
         staleTime: 1000 * 60 * 30,
     });
 
+    const langs = useQuery({
+        queryKey: ["leetcode-langs"],
+        queryFn: leetcode.getLanguagesData,
+        staleTime: 1000 * 60 * 30,
+    })
+
     const submissions = useQuery({
         queryKey: ["leetcode-submissions"],
         queryFn: leetcode.getRecentSubmissions,
@@ -20,7 +26,7 @@ function useLeetCodeData() {
         staleTime: 1000 * 60 * 30,
     });
 
-    return { stats, submissions, activity };
+    return { stats, langs, submissions, activity };
 }
 
 export default useLeetCodeData;
