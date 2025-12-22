@@ -1,16 +1,8 @@
-const leetcode = {};
-const baseAddress = "http://localhost:5118"
+import { genericGet } from "./httpClient";
 
-function leetcodeRequest(path) {
-    return fetch(`${baseAddress}/leetcode/${path}`)
-        .then(res => {
-            if (!res.ok) throw new Error(`Request failed. status: ${res.status}`);
-            return res.json();
-        })
-        .catch(error => {
-            console.error("Fetch error: ", error)
-        })
-}
+const leetcode = {};
+
+const leetcodeRequest = async (route) => genericGet(`leetcode/${route}`);
 
 leetcode.getUserStat = async () => leetcodeRequest("profile");
 leetcode.getRecentSubmissions = async () => leetcodeRequest("submissions");
