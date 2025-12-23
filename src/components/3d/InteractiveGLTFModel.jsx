@@ -1,5 +1,5 @@
 import { useCursor } from "@react-three/drei";
-import { useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { CuboidCollider, RigidBody, useRapier } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
 import GLTFModel from "./GLTFModel";
@@ -8,7 +8,6 @@ import * as THREE from "three";
 function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, colliderSize, ...props }) {
     const rigidBody = useRef();
     const { camera } = useThree();
-    const { rapier } = useRapier();
     const [hovered, setHovered] = useState(false);
     const dragging = useRef(false);
 
@@ -17,13 +16,17 @@ function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, 
     const plane = useRef(new THREE.Plane());
     const raycaster = useRef(new THREE.Raycaster());
     const mouse = useRef(new THREE.Vector2());
+    
+    function updateMouse(mouse, e) {
+        mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+        mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+    }
 
     const onPointerDown = (e) => {
         e.stopPropagation();
         dragging.current = true;
-        rigidBody.current.setEnabledRotations(false, false, false);
-        rigidBody.current.setBodyType(rapier.RigidBodyType.KinematicPositionBased);
 
+        updateMouse(mouse, e);
         const bodyPos = rigidBody.current.translation();
         const worldPos = new THREE.Vector3(bodyPos.x, bodyPos.y, bodyPos.z);
 
@@ -37,26 +40,14 @@ function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, 
         const handlePointerMove = (e) => {
             if (!dragging.current) return;
 
-            mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-            mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-
-            raycaster.current.setFromCamera(mouse.current, camera);
-
-            const point = new THREE.Vector3();
-            if (raycaster.current.ray.intersectPlane(plane.current, point)) {
-                rigidBody.current.setNextKinematicTranslation(point);
-            }
+            updateMouse(mouse, e);
         };
 
         const handlePointerUp = () => {
             if (!dragging.current) return;
 
             dragging.current = false;
-
-            rigidBody.current.setBodyType(
-                rapier.RigidBodyType.Dynamic
-            );
-            rigidBody.current.wakeUp();
+            // rigidBody.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
         };
 
         window.addEventListener("pointermove", handlePointerMove);
@@ -70,9 +61,38 @@ function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, 
         };
     }, []);
 
+    useFrame((_, delta) => {
+        if (!dragging.current) return;
+
+        raycaster.current.setFromCamera(mouse.current, camera);
+
+        const point = new THREE.Vector3();
+        if (!raycaster.current.ray.intersectPlane(plane.current, point)) return;
+
+        const body = rigidBody.current;
+        const bodyPos = body.translation();
+
+        const dir = new THREE.Vector3(
+            point.x - bodyPos.x,
+            point.y - bodyPos.y,
+            point.z - bodyPos.z
+        );
+
+        const strength = 5;
+        const maxSpeed = 6;
+
+        dir.multiplyScalar(strength);
+        // dir.clampLength(0, maxSpeed);
+
+        body.setLinvel(
+            { x: dir.x, y: dir.y, z: dir.z },
+            true
+        );
+    })
+
     return(
-        <RigidBody position={[-32.5, 4.77, 7.5]} ref={rigidBody} type="kinematicPosition">
-            <CuboidCollider args={[0.15, 0.025, 0.17]} />
+        <RigidBody position={initialPosition} ref={rigidBody} type="dynamic">
+            <CuboidCollider args={colliderSize} />
             <group position={visualOffset}>
 
             <GLTFModel
@@ -90,3 +110,4 @@ function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, 
 }
 
 export default InteractiveGLTFModel;
+

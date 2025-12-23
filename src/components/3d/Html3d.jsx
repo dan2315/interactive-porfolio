@@ -11,7 +11,6 @@ function Html3d({ position, rotation, scale, children }) {
     const rendererRef = useRef();
     const rootRef = useRef();
 
-
     useEffect(() => {
         const css3dRenderer = new CSS3DRenderer();
         css3dRenderer.domElement.style.position = 'absolute';
@@ -33,7 +32,8 @@ function Html3d({ position, rotation, scale, children }) {
                 <div>
                     {children}
                 </div>
-            </QueryClientProvider>);
+            </QueryClientProvider>
+        );
 
         rootRef.current = root;
         

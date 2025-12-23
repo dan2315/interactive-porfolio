@@ -34,9 +34,9 @@ function GLTFModel({ id, url, onLoad, ...props }) {
           blobURL,
           (gltf) => {
             if (!cancelled) {
+              onLoad?.(gltf);
               setModel(gltf.scene);
               setAssetLoaded(id);
-              onLoad?.(gltf.scene);
             }
           },
           undefined,
@@ -65,7 +65,7 @@ function GLTFModel({ id, url, onLoad, ...props }) {
     };
   }, [id, url, registerAsset, updateAssetProgress, setAssetLoaded, setAssetError, onLoad]);
 
-  return model ? <primitive object={model} {...props} /> : null;
+  return model && !props.hide ? <primitive object={model} {...props} /> : null;
 }
 
 export default GLTFModel;
