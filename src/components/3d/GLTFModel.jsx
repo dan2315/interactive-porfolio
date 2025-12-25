@@ -34,9 +34,9 @@ function GLTFModel({ id, url, onLoad, ...props }) {
           blobURL,
           (gltf) => {
             if (!cancelled) {
-              onLoad?.(gltf);
               setModel(gltf.scene);
               setAssetLoaded(id);
+              onLoad?.(gltf);
             }
           },
           undefined,

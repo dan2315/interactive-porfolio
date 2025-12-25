@@ -4,27 +4,33 @@ import { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { CSS3DRenderer, CSS3DObject } from 'three/examples/jsm/Addons.js';
 import { queryClient } from '../..';
+import * as THREE from "three";
 
 function Html3d({ position, rotation, scale, children }) {
-    const { camera, gl, scene, size } = useThree();
-    const css3dRef = useRef();
+    const { camera, gl: glRenderer, scene, size } = useThree();
     const rendererRef = useRef();
     const rootRef = useRef();
+    const groupRef = useRef();
 
     useEffect(() => {
         const css3dRenderer = new CSS3DRenderer();
         css3dRenderer.domElement.style.position = 'absolute';
         css3dRenderer.domElement.style.top = '0px';
-        css3dRenderer.domElement.style.pointerEvents = 'none';
+        css3dRenderer.domElement.style.zIndex = '0';
+        css3dRenderer.domElement.id = "CSS3D";
 
-        const parent = gl.domElement.parentElement;
+        glRenderer.setClearColor(0x000000, 0);
+        glRenderer.domElement.style.position = 'absolute';;
+        glRenderer.domElement.style.zIndex = '1';
+        glRenderer.domElement.style.pointerEvents = 'none';
+
+        const parent = glRenderer.domElement.parentElement;
         if (parent) {
-            parent.appendChild(css3dRenderer.domElement);
+            parent.insertBefore(css3dRenderer.domElement, glRenderer.domElement);
         }
         rendererRef.current = css3dRenderer;
 
         const element = document.createElement('div')
-        element.style.pointerEvents = 'auto'
 
         const root = createRoot(element);
         root.render(
@@ -37,13 +43,28 @@ function Html3d({ position, rotation, scale, children }) {
 
         rootRef.current = root;
         
+        const holder = new THREE.Group();
+        holder.position.set(...position);
+        holder.rotation.set(...rotation);
+        holder.scale.set(...scale);
+
         const css3dObject = new CSS3DObject(element)
-        css3dObject.position.set(...position)
-        css3dObject.rotation.set(...rotation)
-        css3dObject.scale.set(...scale);
         
-        scene.add(css3dObject)
-        css3dRef.current = css3dObject
+        holder.add(css3dObject)
+
+        let wf = 1920 * 0.9;
+        let hf = 1080 * 0.9;
+        var geometry = new THREE.PlaneGeometry(wf, hf);
+        var material = new THREE.MeshBasicMaterial();
+        material.color.set('black'); 
+        material.opacity = 0;
+        material.blending = THREE.NoBlending;
+        material.side = THREE.DoubleSide;
+        var plane = new THREE.Mesh(geometry, material);
+        holder.add(plane)
+
+        groupRef.current = holder;
+        scene.add(holder)
 
         return () => {
             scene.remove(css3dObject)

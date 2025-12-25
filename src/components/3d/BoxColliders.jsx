@@ -11,7 +11,6 @@ function BoxColliders() {
     const handleLoad = (gltf) => {
         if (loaded.current) return;
         loaded.current = true;
-        console.log("Load called")
         const found = []
 
         gltf.scene.traverse(obj => {

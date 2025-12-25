@@ -1,113 +1,159 @@
-import { useCursor } from "@react-three/drei";
+import { Outlines, useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { CuboidCollider, RigidBody, useRapier } from "@react-three/rapier";
+import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import { useEffect, useRef, useState } from "react";
 import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 
-function InteractiveGLTFModel({ id, url, onLoad, visualOffset, initialPosition, colliderSize, ...props }) {
-    const rigidBody = useRef();
-    const { camera } = useThree();
-    const [hovered, setHovered] = useState(false);
-    const dragging = useRef(false);
+function InteractiveGLTFModel({
+  id,
+  url,
+  onLoad,
+  onGrabStart,
+  onGrabMove,
+  onGrabEnd,
+  canGrab,
+  meshRef,
+  rigidRef,
+  visualOffset,
+  initialPosition,
+  colliderSize,
+  ...props
+}) {
+  const rigidBody = useRef();
+  const groupRef = useRef();
+  const { camera } = useThree();
+  const [hovered, setHovered] = useState(false);
+  const dragging = useRef(false);
 
-    useCursor(hovered);
+  useCursor(hovered && canGrab);
 
-    const plane = useRef(new THREE.Plane());
-    const raycaster = useRef(new THREE.Raycaster());
-    const mouse = useRef(new THREE.Vector2());
-    
-    function updateMouse(mouse, e) {
-        mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
-        mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
-    }
+  const plane = useRef(new THREE.Plane());
+  const raycaster = useRef(new THREE.Raycaster());
+  const mouse = useRef(new THREE.Vector2());
 
-    const onPointerDown = (e) => {
-        e.stopPropagation();
-        dragging.current = true;
+  function updateMouse(mouse, e) {
+    mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
+    mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
+  }
 
-        updateMouse(mouse, e);
-        const bodyPos = rigidBody.current.translation();
-        const worldPos = new THREE.Vector3(bodyPos.x, bodyPos.y, bodyPos.z);
+  const onPointerDown = (e) => {
+    if (!canGrab) return;
+    dragging.current = true;
+    e.stopPropagation();
+    updateMouse(mouse, e);
+    const bodyPos = rigidBody.current.translation();
+    const worldPos = new THREE.Vector3(bodyPos.x, bodyPos.y, bodyPos.z);
 
-        const normal = new THREE.Vector3();
-        camera.getWorldDirection(normal);
+    const normal = new THREE.Vector3();
+    camera.getWorldDirection(normal);
 
-        plane.current.setFromNormalAndCoplanarPoint(normal, worldPos);
+    plane.current.setFromNormalAndCoplanarPoint(normal, worldPos);
+
+    onGrabStart?.();
+  };
+
+  useEffect(() => {
+    const handlePointerMove = (e) => {
+      if (!dragging.current) return;
+      updateMouse(mouse, e);
     };
 
-    useEffect(() => {
-        const handlePointerMove = (e) => {
-            if (!dragging.current) return;
+    const handlePointerUp = () => {
+      if (!dragging.current) return;
+      dragging.current = false;
+      onGrabEnd?.();
+    };
 
-            updateMouse(mouse, e);
-        };
+    window.addEventListener("pointermove", handlePointerMove);
+    window.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointercancel", handlePointerUp);
 
-        const handlePointerUp = () => {
-            if (!dragging.current) return;
+    return () => {
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerUp);
+    };
+  }, [onGrabEnd]);
 
-            dragging.current = false;
-            // rigidBody.current.setLinvel({ x: 0, y: 0, z: 0 }, true);
-        };
+  useEffect(() => {
+    if (!groupRef.current || !hovered) return;
 
-        window.addEventListener("pointermove", handlePointerMove);
-        window.addEventListener("pointerup", handlePointerUp);
-        window.addEventListener("pointercancel", handlePointerUp);
+    groupRef.current.traverse((child) => {
+      if (child.isMesh) {
+        child.userData.outlineEnabled = true;
+      }
+    });
 
-        return () => {
-            window.removeEventListener("pointermove", handlePointerMove);
-            window.removeEventListener("pointerup", handlePointerUp);
-            window.removeEventListener("pointercancel", handlePointerUp);
-        };
-    }, []);
+    return () => {
+      if (!groupRef.current) return;
+      groupRef.current.traverse((child) => {
+        if (child.isMesh) {
+          child.userData.outlineEnabled = false;
+        }
+      });
+    };
+  }, [hovered]);
 
-    useFrame((_, delta) => {
-        if (!dragging.current) return;
+  useFrame(() => {
+    if (!dragging.current) return;
 
-        raycaster.current.setFromCamera(mouse.current, camera);
+    raycaster.current.setFromCamera(mouse.current, camera);
 
-        const point = new THREE.Vector3();
-        if (!raycaster.current.ray.intersectPlane(plane.current, point)) return;
+    const point = new THREE.Vector3();
+    if (!raycaster.current.ray.intersectPlane(plane.current, point)) return;
 
-        const body = rigidBody.current;
-        const bodyPos = body.translation();
+    const body = rigidBody.current;
+    const bodyPos = body.translation();
 
-        const dir = new THREE.Vector3(
-            point.x - bodyPos.x,
-            point.y - bodyPos.y,
-            point.z - bodyPos.z
-        );
+    const dir = new THREE.Vector3(
+      point.x - bodyPos.x,
+      point.y - bodyPos.y,
+      point.z - bodyPos.z
+    );
 
-        const strength = 5;
-        const maxSpeed = 6;
+    const strength = 5;
+    dir.multiplyScalar(strength);
 
-        dir.multiplyScalar(strength);
-        // dir.clampLength(0, maxSpeed);
+    body.setLinvel({ x: dir.x, y: dir.y, z: dir.z }, true);
 
-        body.setLinvel(
-            { x: dir.x, y: dir.y, z: dir.z },
-            true
-        );
-    })
+    onGrabMove?.(mouse.current);
+  });
 
-    return(
-        <RigidBody position={initialPosition} ref={rigidBody} type="dynamic">
-            <CuboidCollider args={colliderSize} />
-            <group position={visualOffset}>
-
-            <GLTFModel
-                id={id}
-                url={url}
-                onLoad={onLoad}
-                onPointerOver={() => setHovered(true)}
-                onPointerOut={() => setHovered(false)}
-                onPointerDown={onPointerDown}
-                {...props}
-                />
-            </group>
-        </RigidBody>
-    )
+  return (
+    <RigidBody 
+      ref={(rb) => {
+        rigidBody.current = rb;
+        if (rigidRef) rigidRef.current = rb;
+      }}
+      position={initialPosition}
+      type="dynamic"
+    >
+      <CuboidCollider args={colliderSize} />
+      <group
+        ref={(g) => {
+          groupRef.current = g;
+          if (meshRef) meshRef.current = g;
+        }}
+        position={visualOffset}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+        onPointerDown={onPointerDown}
+      >
+        <GLTFModel id={id} url={url} onLoad={onLoad} {...props} />
+        {hovered && (
+          <Outlines 
+            thickness={5} 
+            color="cyan" 
+            screenspace
+            opacity={1}
+            transparent
+            angle={Math.PI}
+          />
+        )}
+      </group>
+    </RigidBody>
+  );
 }
 
 export default InteractiveGLTFModel;
-
