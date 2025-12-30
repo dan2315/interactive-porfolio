@@ -1,0 +1,10 @@
+.container {
+    overflow-y: scroll;
+}
+
+.itemContainer {
+    margin: 40px;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 16px;
+}

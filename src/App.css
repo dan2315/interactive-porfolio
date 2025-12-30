@@ -3,4 +3,7 @@
   width: 1600px;
   height: 900px;
   font-family: "Montserrat", sans-serif;
+
+  display: flex;
+  flex-direction: column;
 }

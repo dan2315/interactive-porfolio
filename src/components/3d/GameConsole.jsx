@@ -1,11 +1,14 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
-import { useConsole } from "../../contexts/GameConsoleContext";
+import { useConsoleStore } from "../../stores/GameConsoleStore";
+import { useRouteStore } from "../../stores/RouteStore";
 
 function GameConsole({ position, rotation, ...props }) {
-    const { setCartridgeId } = useConsole()
+    const registerConsole = useConsoleStore(s => s.registerConsole);
+    const { setCartridgeId } = useConsoleStore()
+    const navigate = useRouteStore(r => r.setRoute);
     const groupRef = useRef();
     const consoleRef = useRef();
     const ejectButtonRef = useRef();
@@ -33,6 +36,13 @@ function GameConsole({ position, rotation, ...props }) {
             groupRef.current.userData.consoleApi = consoleApi;
         }
     };
+
+      useEffect(() => {
+
+        return () => {
+            useConsoleStore.getState().clearConsole();
+        };
+    }, []);
 
     useFrame(() => {
         if (!consoleRef.current || isInitialized.current || !groupRef.current) return;
@@ -81,7 +91,8 @@ function GameConsole({ position, rotation, ...props }) {
                 insert: insertPos,
                 inserted: insertedPos,
             });
-
+            
+            registerConsole(consoleApi);
             isInitialized.current = true;
         }
     });
@@ -104,6 +115,8 @@ function GameConsole({ position, rotation, ...props }) {
             if (!cartridgeRef.current) return;
             cartridgeRef.current.eject();
             cartridgeRef.current = null;
+            setCartridgeId(null);
+            navigate('/');
         },
 
         getInsertPose() {

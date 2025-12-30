@@ -3,6 +3,7 @@ import InteractiveGLTFModel from "./InteractiveGLTFModel";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRapier } from "@react-three/rapier";
+import { useConsoleStore } from "../../stores/GameConsoleStore";
 
 const RAY_LENGTH = 3;
 
@@ -13,7 +14,9 @@ const CartridgeState = Object.freeze({
   EJECTING: 3,
 });
 
-function Cartridge({id, ...props}) {
+function Cartridge({id, active, ...props}) {
+    const consoleApi = useConsoleStore(s => s.consoleApi);
+    const consoleReady = useConsoleStore(s => s.ready);
     const [state, setState] = useState(CartridgeState.FREE);
     const stateRef = useRef(CartridgeState.FREE);
     const [gameConsole, setGameConsole] = useState(null);
@@ -29,11 +32,18 @@ function Cartridge({id, ...props}) {
     const targetRotation = useRef(new THREE.Quaternion());
     const lerpSpeed = 0.15;
 
-    window.console.log("cartridge state is ", canGrab, state)
-
     useEffect(() => {
         stateRef.current = state;
     }, [state])
+
+    useEffect(() => {
+        if (!active || !consoleReady) return;
+
+        rigidRef.current.setBodyType(rapier.RigidBodyType.KinematicPositionBased);
+        setGameConsole(consoleApi);
+        insert(consoleApi);
+
+    }, [active, consoleReady]);
 
     const findConsoleBeyondCartridge = useCallback((mousePosition) => {
         if (!meshRef.current) return null;
@@ -117,15 +127,15 @@ function Cartridge({id, ...props}) {
     };
 
     const getId = () => {
-        return props.id;
+        return id;
     }
 
-    const eject = () => { // external use
+    const eject = () => {
         if (stateRef.current !== CartridgeState.INSERTED) return;
 
         setState(CartridgeState.EJECTING);
 
-        const { position } = gameConsole.getInsertPose();
+        const { position } = consoleApi.getEjectPose();
 
         targetPosition.current.set(
             position.x,
@@ -185,7 +195,7 @@ function Cartridge({id, ...props}) {
 
             rigidRef.current.setNextKinematicTranslation(pos);
 
-            if (t >= 0.75) {
+            if (t >= 1) {
                 finishEject();
             }
         }

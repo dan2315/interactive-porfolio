@@ -1,0 +1,22 @@
+.container {
+    background-color: black;
+    height: 900px;
+    width: 1600px;
+}
+
+.floatingblock {
+    display: inline-block;
+}
+
+.dod {
+    color: #fff;
+    font-size: 48px;
+    font-weight: 700;
+    width: auto;
+}
+
+.undertext {
+    color: #fff;
+    text-align: center;
+    margin-top: 10px;
+}

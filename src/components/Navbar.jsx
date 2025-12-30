@@ -1,34 +1,34 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useRouteStore } from "../stores/RouteStore";
 import styles from "./Navbar.module.css"
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export default function Navbar() { 
-    const navButtons = [
-        { name: "Experiences", id: "experiences" },
-        { name: "Projects", id: "projects" },
-        { name: "LeetCode", id: "leetcode" },
-        { name: "Contact Me", id: "contact" },
-    ]
+export default function Navbar({routes, selectedPage, initPage}) { 
+    const navigate = useRouteStore(r => r.setRoute);
+    console.log(routes)
 
-    const navigate = useNavigate();
-    const location = useLocation();
+    function navigateTo(section) {
+        navigate(`/${routes.base}/${section}`)
+    }
 
     useEffect(() => {
-        navigate(`/${navButtons[0].id}`)
-    }, [])
-    const selectedPage = location.pathname.replace("/", "") || "experiences";
+        if (!routes.routes) return;
+        navigateTo(initPage ?? Object.keys(routes.routes)[0]);
+    }, []);
+
+    if (!routes.routes) return;
 
     return (
         <nav className={styles.navContainer}>
             <h2>Danil Prokhorenko</h2>
             <div className={styles.buttonsContainer}>
-                {navButtons.map(btn => {
+                {Object.entries(routes.routes).map(([routeKey, route]) => {
                     return (
                         <div                         
-                            key={btn.name}
-                            className={`${styles.navButton} ${selectedPage === btn.id ? styles.selected : ""}`}
-                            onClick={() => navigate(`/${btn.id}`)}>
-                            {btn.name}
+                            key={routeKey}
+                            className={`${styles.navButton} ${selectedPage === routeKey ? styles.selected : ""}`}
+                            onClick={() => navigateTo(routeKey)}
+                            >
+                            {route.name}
                         </div>
                     )
                 })}
