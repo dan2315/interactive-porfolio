@@ -1,6 +1,6 @@
 import { useAdminStore } from "../stores/AdminStore";
 
-const baseAddress = "http://localhost:5250";
+const baseAddress = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:5250";
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${baseAddress}/${path}`, {
