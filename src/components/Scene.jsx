@@ -22,7 +22,6 @@ function Scene() {
 
   const activeCartridge = cartridge ?? null;
   const initSection = section ?? null;
-  console.log("current cartridge is", activeCartridge, section)
 
   useEffect(() => {
     setCurrentView("initial");
@@ -67,7 +66,7 @@ function Scene() {
               rotation={[0, (Math.PI / 180) * -30, 0]}
               scale={[0.0009, 0.0009, 0.0009]}
             >
-              <HtmlContent initSection={initSection}/>
+              <HtmlContent/>
             </Html3d>
           </Suspense>
         </Canvas>

@@ -8,3 +8,32 @@
     border: 2px solid #ccc;
     border-radius: 16px;
 }
+
+.itemContainer:hover {
+    background-color: rgb(239, 233, 225);
+    cursor: pointer;
+}
+
+.imageMarkdown {
+    max-height: 40vh;
+    border-radius: 20px;
+}
+
+.imageFromPreview {
+    max-height: 15vh;
+    margin-right: 6px;
+    border-radius: 10px;
+}
+
+.reactionContainer {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 20px;
+    margin: 0 5px;
+    padding: 5px;
+}
+
+.reactionContainer:hover {
+    background-color: antiquewhite;
+    cursor: cell;
+}

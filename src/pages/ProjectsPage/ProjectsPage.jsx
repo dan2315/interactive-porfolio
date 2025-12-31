@@ -1,11 +1,11 @@
 import styles from './ProjectPage.module.css'
 import { useEffect, useState } from "react";
 import projectsService from "../../services/projectsService";
-import EmojiPicker from "emoji-picker-react";
-import { Description, ItemContainer, PrideRating, ReactionsView, RepositoryView, ShortDescription, Technologies, Title } from './components/Components';
+import { ImagesRow, ItemContainer, PrideRating, ReactionsView, ShortDescription, Technologies, Title } from './components/Components';
+import PageLoading from '../PageLoading';
 
 function ProjectsPage() {
-    const [projects, setProjects] = useState([]);
+    const [projects, setProjects] = useState(null);
 
     useEffect(() => {
         const doEffect = async () => {
@@ -30,20 +30,20 @@ function ProjectsPage() {
         );
     }
     
+    if (!projects) return <PageLoading/>;
 
     return (
         <div className={styles.container}>
-        {projects && projects.map(project => 
-           <ItemContainer key={project.slug}>
-            <Title value={project.title}/>
-            <Technologies value={project.technologies} />
-            <PrideRating value={project.prideRating}/>
-            <ShortDescription value={project.shortDescription}/>
-            <Description value={project.description}/>
-            <RepositoryView project={project}/>
-            <ReactionsView project={project}/>
-           </ItemContainer> 
-        )}
+            {projects && projects.map(project => 
+            <ItemContainer key={project.slug}>
+                    <Title value={project.title}/>
+                    <Technologies value={project.technologies} />
+                    <PrideRating value={project.prideRating}/>
+                    <ShortDescription value={project.shortDescription}/>
+                    <ImagesRow value={project.description}/>
+                    <ReactionsView project={project} toggleReaction={toggleReaction}/>
+            </ItemContainer>
+            )}
         </div>
     )
 }

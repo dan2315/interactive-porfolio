@@ -1,4 +1,4 @@
-import ReactMarkdown from "react-markdown";
+import { Description } from "../pages/ProjectsPage/components/Components";
 
 export function MarkdownEditor({ value, setValue, onSubmit, onCancel }) {
 
@@ -17,9 +17,8 @@ export function MarkdownEditor({ value, setValue, onSubmit, onCancel }) {
       }}
       />
 
-      <div style={{ width: "50%", borderLeft: "1px solid #ccc", paddingLeft: 12 }}>
-        <ReactMarkdown>{value}</ReactMarkdown>
-      </div>
+      <Description value ={value}/>
+
     </div>
   );
 }

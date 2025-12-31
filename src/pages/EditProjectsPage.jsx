@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import projectsService from "../services/projectsService";
 import ProjectEditor from "./ProjectEditor";
 import ProjectCreationForm from "./ProjectCreationForm";
+import PageLoading from "./PageLoading";
 
 export default function EditProjectsPage() {
   const [projects, setProjects] = useState([]);
@@ -30,6 +31,7 @@ export default function EditProjectsPage() {
     const result = await projectsService.admin.create(project);
     console.log(result)
     setCreatingNew(false);
+    loadProjects();
   }
 
   const handleUpdate = async (project, patch) => {
@@ -59,7 +61,7 @@ export default function EditProjectsPage() {
     loadProjects();
   };
 
-  if (loading) return <p>Loading projects...</p>;
+  if (loading) return <PageLoading/>;
 
   return (
     <div style={{overflowY: "scroll", padding:"20px"}}>

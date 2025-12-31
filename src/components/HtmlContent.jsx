@@ -4,7 +4,7 @@ import ProjectsPage from "../pages/ProjectsPage/ProjectsPage";
 import { useConsoleStore } from "../stores/GameConsoleStore";
 import IdleScreen from "./IdleScreen";
 import ContactMePage from "../pages/ContactMePage";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Navbar from "./Navbar";
 import { useRouteStore } from "../stores/RouteStore";
 import EditProjectsPage from "../pages/EditProjectsPage";
@@ -56,31 +56,43 @@ const routes = {
   },
 };
 
-function HtmlContent( {initSection} ) {
-  const section = useRouteStore((s) => s.route)?.split('/')[2];
+function HtmlContent() {
+  const route = useRouteStore((s) => s.route);
+  const section = route?.split('/')[2];
+  const navigate = useRouteStore(r => r.setRoute);
   const { cartridgeId } = useConsoleStore();
-  const [page, setPage] = useState(null);
+  const prevCartridgeId = useRef(-1);
   const cartridgeRoutes = routes[cartridgeId];
   const isAdminPage = cartridgeId === 2; 
-
-  console.log("Path:", cartridgeId, section);
+  const defaultSection = cartridgeRoutes && Object.keys(cartridgeRoutes.routes)[0];
 
   useEffect(() => {
-    if (!cartridgeRoutes || !section) return;
-    console.log(
-      "Trying to get page:",
-      cartridgeRoutes.routes[section]?.element
-    );
-    setPage(cartridgeRoutes.routes[section]?.element);
-  }, [cartridgeRoutes, section]);
+    if (cartridgeId == null || !cartridgeRoutes) return;
+
+    if (prevCartridgeId.current !== cartridgeId) {
+      prevCartridgeId.current = cartridgeId;
+      navigate(`${cartridgeRoutes.base}/${defaultSection}`);
+      return;
+    }
+
+    if (!section || !cartridgeRoutes.routes[section]) {
+      navigate(`${cartridgeRoutes.base}/${defaultSection}`);
+    }
+  }, [cartridgeId, cartridgeRoutes, section, navigate, defaultSection]);
 
   if (cartridgeId == null) return <IdleScreen />;
+
+  const selectedSection = section ?? defaultSection; 
+
+  const Page =
+    selectedSection &&
+    cartridgeRoutes?.routes[selectedSection]?.element;
 
   return (
     <div className="app-container">
       <AdminCurtain enabled={isAdminPage}>
-        <Navbar selectedPage={section} initPage={initSection} routes={cartridgeRoutes} />
-        {page}
+        <Navbar selectedPage={selectedSection} routes={cartridgeRoutes} />
+        {Page}
       </AdminCurtain>
     </div>
   );

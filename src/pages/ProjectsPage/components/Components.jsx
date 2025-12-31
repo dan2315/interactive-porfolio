@@ -1,5 +1,8 @@
 import styles from "../ProjectPage.module.css"
 import ReactMarkdown from "react-markdown";
+import EmojiPicker from "emoji-picker-react";
+import { useState } from "react";
+
 
 export function ItemContainer (props) {
     return <div className={styles.itemContainer}>{props.children}</div>
@@ -27,9 +30,54 @@ export function ShortDescription(props) {
 }
 
 export function Description(props) {
-    return <div style={{ width: "50%", borderLeft: "1px solid #ccc", paddingLeft: 12 }}>
-        <ReactMarkdown>{props.value}</ReactMarkdown>
+    return <div style={{ width: "100%", borderLeft: "1px solid #ccc", paddingLeft: 12 }}>
+        <ReactMarkdown
+            components={{
+                img: ({...props}) => {
+                    // alt prop passed!
+                    // eslint-disable-next-line jsx-a11y/alt-text
+                    return <img 
+                        className={styles.imageMarkdown}
+                        {...props}
+                    />
+                }
+            }}
+        >{props.value}</ReactMarkdown>
     </div>
+}
+
+function parseForSrcs(text) {
+  const regex = /!\[([^\]]*)\]\(([^)]+)\)/g;
+  const images = [];
+
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    images.push({
+      alt: match[1] || "",
+      src: match[2],
+    });
+  }
+
+  return images;
+}
+
+export function ImagesRow({ n, ...props }) {
+    const imgSrcs = parseForSrcs(props.value).slice(0, n ?? 10);;
+
+    if (imgSrcs.length === 0) return null;
+
+    return (
+        <>
+        {imgSrcs.map((image, i) => {
+            return <img
+                key={i}
+                alt={image.alt}
+                src={image.src}
+                className={styles.imageFromPreview}
+            />
+        })}
+        </>
+    )
 }
 
 export function RepositoryView({project}) {
@@ -116,23 +164,37 @@ export function RepositoryView({project}) {
 ))
 }
 
-export function ReactionsView({project}) {
+export function ReactionsView({project, toggleReaction}) {
+    const [chosingReaction, setChosingReaction] = useState();
+
     return (
-        <div style={{ marginTop: '20px' }}>
-            <h3>Reactions:</h3>
+        <div style={{ marginTop: '20px', position: "relative"}}>
+            <i>Reactions:</i>
             {project.reactions && Object.entries(project.reactions.emojis).map(([emoji, count]) => 
-                <span key={emoji} style={{ fontSize: '20px', margin: '0 5px' }}>
+                <span 
+                    key={emoji} 
+                    className={styles.reactionContainer}
+                    onClick={() => toggleReaction(project.slug, emoji)}
+                >
                     {emoji} {count}
                 </span>
             )}
-            {/* <EmojiPicker
+            <span 
+                className={styles.reactionContainer} 
+                style={{ fontSize: 14 }}
+                onClick={() => setChosingReaction(!chosingReaction)}
+            >
+                <b>Add</b>
+            </span>
+            {chosingReaction && <EmojiPicker
                 onEmojiClick={(emojiData) => {
-                    console.log(project.slug)
                     toggleReaction(project.slug, emojiData.emoji);
+                    setChosingReaction(false);
                 }}
+                style={{ position: "absolute", zIndex: 100 }}
                 lazyLoadEmojis
                 theme="dark"
-            /> */}
+            />}
         </div>
     )
 }

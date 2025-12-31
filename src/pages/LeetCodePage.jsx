@@ -3,8 +3,8 @@ import styles from "./LeetCodePage.module.css"
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import useLeetCodeData from "../hooks/useLeetcodeData";
 import { timeAgo } from "../utils/time";
-import CustomTooltip from "../components/Recharts/CustomTooltip";
 import Dropdown from "../components/Dropdown";
+import PageLoading from "./PageLoading";
 
 function LeetCodePage() {
     const { stats, langs, submissions, activity } = useLeetCodeData();
@@ -12,30 +12,32 @@ function LeetCodePage() {
     const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const difficultyColors = {Easy: "#A8E6CF", Medium: "#FFD3B6", Hard: "#FF8B94"};
     const languageColors = {"C#": "#8DD3C7","C++": "#BEBADA","Python3": "#FDB462","Java": "#FFB6B9",};
- 
-    if (stats.isLoading) return <>
-        <div className={styles.pageContainer}>
-            <h1>Loading...</h1>
-        </div>
-    </>
+
+    const isLoading =
+    !stats || stats.isLoading ||
+    !langs?.data ||
+    !submissions?.data ||
+    !activity?.data;
+
+    if (isLoading) {
+        return <PageLoading/>
+    }
     
-    const submissionNum = stats.data.matchedUser.submitStatsGlobal.acSubmissionNum;
-    console.log(submissionNum)
-    const pieDataSubmissions = submissionNum
-        .filter(item => item.difficulty !== "All")
+    const submissionNums = Object.entries(stats.data);
+    const pieDataSubmissions = submissionNums
+        .filter(item => item[0] !== "username")
         .map(item => ({
-            name: item.difficulty,
-            value: item.count
-        }));
+            name: item[0].slice(6, item[0].length),
+            value: item[1]
+    }));
     
-    const langData = langs.data.matchedUser.languageProblemCount;
+    const langData = langs.data.problemsSolvedByLanguages;
 
-
-    const years = activity.data.matchedUser.userCalendar.activeYears;
-    const maxStreak = activity.data.matchedUser.userCalendar.streak;
-    const calendarJson = activity.data.matchedUser.userCalendar.submissionCalendar;
+    console.log(pieDataSubmissions)
+    const years = activity.data.activeYears;
+    const maxStreak = activity.data.streak;
+    const calendarJson = activity.data.submissionCalendar;
     const calendar = JSON.parse(calendarJson); 
-
 
     const submissionsByMonth = Array.from({ length: 12 }, (_, i) => ({
         month: monthNames[i],
@@ -46,9 +48,6 @@ function LeetCodePage() {
         const month = date.getMonth();
         submissionsByMonth[month].submissions += count;
     }
-
-
-    console.log(submissions.data.recentAcSubmissionList)
 
 
     return(
@@ -105,7 +104,7 @@ function LeetCodePage() {
                     ))} 
                     </Pie>
                 </PieChart>
-                <p style={{textAlign: "center"}}>Total Solved: {submissionNum[0].count}</p>
+                <p style={{textAlign: "center"}}>Total Solved: {submissionNums[0].count}</p>
                 </div>
                 <div style={{width: "100%"}}>
                     <ResponsiveContainer width="80%" height={300}>
@@ -135,7 +134,7 @@ function LeetCodePage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {submissions.data.recentAcSubmissionList.map((sub, i) => {
+                        {submissions.data.submissions.map((sub, i) => {
                             return (
                                 <tr className={`${styles.row} ${i % 2 !== 0 ? styles.odd : ''}`}>
                                     <td className={styles.tableElement}>
