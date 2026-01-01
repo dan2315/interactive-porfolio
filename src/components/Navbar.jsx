@@ -1,10 +1,8 @@
 import { useRouteStore } from "../stores/RouteStore";
 import styles from "./Navbar.module.css"
-import { useEffect } from "react";
 
 export default function Navbar({routes, selectedPage}) { 
     const navigate = useRouteStore(r => r.setRoute);
-    console.log(routes)
 
     function navigateTo(section) {
         navigate(`/${routes.base}/${section}`)

@@ -1,0 +1,48 @@
+.dimArea {
+    position: absolute;
+    width: 1600px;
+    height: 900px;
+    background-color: rgba(0, 0, 0, 0.2); 
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+    background-color: antiquewhite;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    aspect-ratio: 1/1;
+}
+
+.header {
+    display: flex;
+    background-color: burlywood;
+    justify-content: space-between;
+    border-radius: 20px 20px 0px 0px;
+    padding: 10px 20px 10px 20px;
+    height: 40px;
+    width: auto;
+}
+
+.backButton {
+    margin: 5px;
+    height: 100%;
+    aspect-ratio: 1/1;
+    font-size: clamp(14px, 4cqi, 28px);
+}
+
+.backButton:hover {
+    scale: 1.25;
+    cursor: pointer;
+}
+
+.restOfTheContent {
+    padding: 20px;
+    height: calc(100% - 100px);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+

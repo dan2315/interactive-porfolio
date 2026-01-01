@@ -5,7 +5,7 @@ import { useState } from "react";
 
 
 export function ItemContainer (props) {
-    return <div className={styles.itemContainer}>{props.children}</div>
+    return <div className={styles.itemContainer} onClick={props.onClick}>{props.children}</div>
 }
 
 export function Title(props) {
@@ -166,15 +166,18 @@ export function RepositoryView({project}) {
 
 export function ReactionsView({project, toggleReaction}) {
     const [chosingReaction, setChosingReaction] = useState();
-
+    console.log(project.reactions)
     return (
         <div style={{ marginTop: '20px', position: "relative"}}>
             <i>Reactions:</i>
             {project.reactions && Object.entries(project.reactions.emojis).map(([emoji, count]) => 
                 <span 
                     key={emoji} 
-                    className={styles.reactionContainer}
-                    onClick={() => toggleReaction(project.slug, emoji)}
+                    className={[
+                            styles.reactionContainer,
+                            emoji === project.reactions.selectedEmoji && styles.selectedReaction
+                        ].filter(Boolean).join(" ")}
+                    onClick={(e) => {toggleReaction(project.slug, emoji); e.stopPropagation();}}
                 >
                     {emoji} {count}
                 </span>
@@ -182,7 +185,7 @@ export function ReactionsView({project, toggleReaction}) {
             <span 
                 className={styles.reactionContainer} 
                 style={{ fontSize: 14 }}
-                onClick={() => setChosingReaction(!chosingReaction)}
+                onClick={(e) => {setChosingReaction(!chosingReaction); e.stopPropagation();}}
             >
                 <b>Add</b>
             </span>

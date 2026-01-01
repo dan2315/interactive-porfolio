@@ -75,9 +75,6 @@ function HtmlContent() {
       return;
     }
 
-    if (!section || !cartridgeRoutes.routes[section]) {
-      navigate(`${cartridgeRoutes.base}/${defaultSection}`);
-    }
   }, [cartridgeId, cartridgeRoutes, section, navigate, defaultSection]);
 
   if (cartridgeId == null) return <IdleScreen />;
@@ -87,7 +84,7 @@ function HtmlContent() {
   const Page =
     selectedSection &&
     cartridgeRoutes?.routes[selectedSection]?.element;
-
+  
   return (
     <div className="app-container">
       <AdminCurtain enabled={isAdminPage}>

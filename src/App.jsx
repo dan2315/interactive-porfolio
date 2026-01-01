@@ -8,7 +8,7 @@ function App() {
     <BrowserRouter>
         <RouteManager/>
         <Routes>
-            <Route path="/:cartridge/:section" element={<Scene />} />
+            <Route path="/:cartridge/:section/*" element={<Scene />} />
             <Route path="/:cartridge" element={<Scene />} />
             <Route path="*" element={<Scene />} />
         </Routes>

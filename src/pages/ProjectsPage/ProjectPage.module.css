@@ -37,3 +37,7 @@
     background-color: antiquewhite;
     cursor: cell;
 }
+
+.selectedReaction {
+    background-color: rgb(255, 225, 133);
+}

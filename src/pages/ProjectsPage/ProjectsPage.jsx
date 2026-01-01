@@ -3,9 +3,14 @@ import { useEffect, useState } from "react";
 import projectsService from "../../services/projectsService";
 import { ImagesRow, ItemContainer, PrideRating, ReactionsView, ShortDescription, Technologies, Title } from './components/Components';
 import PageLoading from '../PageLoading';
+import { useRouteStore } from '../../stores/RouteStore';
+import DetailedProjectView from './components/DetailedProjectView';
 
 function ProjectsPage() {
     const [projects, setProjects] = useState(null);
+    const [selectedProject, setSelectedProject] = useState();
+    const route = useRouteStore(s => s.route);
+    const navigate = useRouteStore(s => s.setRoute);
 
     useEffect(() => {
         const doEffect = async () => {
@@ -14,6 +19,17 @@ function ProjectsPage() {
         }
         doEffect();
     }, [])
+
+    useEffect(() => {
+        const parts = route?.split('/');
+        const projectSlug = parts?.[3];
+
+        
+        if (projectSlug) {
+            const project = projects.find(p => p.slug === projectSlug);
+            setSelectedProject(project);
+        }
+    }, [projects, route])
 
     async function toggleReaction(slug, emoji) {
         const updatedReactions = await projectsService.public.toggleReaction(slug, emoji)
@@ -33,9 +49,10 @@ function ProjectsPage() {
     if (!projects) return <PageLoading/>;
 
     return (
+        <>
         <div className={styles.container}>
             {projects && projects.map(project => 
-            <ItemContainer key={project.slug}>
+            <ItemContainer key={project.slug} onClick={() => navigate(`/main/projects/${project.slug}`)}>
                     <Title value={project.title}/>
                     <Technologies value={project.technologies} />
                     <PrideRating value={project.prideRating}/>
@@ -45,6 +62,8 @@ function ProjectsPage() {
             </ItemContainer>
             )}
         </div>
+        <DetailedProjectView project={selectedProject} back={() => {setSelectedProject(null); navigate("/main/projects")}} toggleReaction={toggleReaction}/>
+        </>
     )
 }
 
