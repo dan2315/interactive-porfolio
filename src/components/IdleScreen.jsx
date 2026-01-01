@@ -5,6 +5,9 @@ const IdleScreen = () => {
   const velocity = useRef({ x: 3, y: 3 });
   const position = useRef({ x: 100, y: 100 });
   const dodRef = useRef();
+  const dodTextRef = useRef();
+  const underTextRef = useRef();
+  const svgRef = useRef();
 
   useEffect(() => {
     const handle = setInterval(() => {
@@ -42,13 +45,9 @@ const IdleScreen = () => {
 
       if (bounced) {
         const randomColor = `hsl(${Math.random() * 360}, 80%, 60%)`;
-        const dodText = el.querySelector(`.${styles.dod}`);
-        const underText = el.querySelector(`.${styles.undertext}`);
-        const svg = el.querySelector("#outer-svg");
-        if (dodText) dodText.style.color = randomColor;
-        if (underText) underText.style.color = randomColor;
-        if (svg) svg.style.fill = randomColor;
-
+        if (dodTextRef.current) dodTextRef.current.style.color = randomColor;
+        if (underTextRef.current) underTextRef.current.style.color = randomColor;
+        if (svgRef.current) svgRef.current.style.fill = randomColor;
       }
 
       el.style.transform = `translate(${position.current.x}px, ${position.current.y}px)`;
@@ -64,7 +63,7 @@ const IdleScreen = () => {
   return (
     <div className={styles.container}>
       <div ref={dodRef} className={styles.floatingblock}>
-        <div className={styles.dod}>
+        <div ref={dodTextRef} className={styles.dod}>
           DOD
         </div>
         <svg
@@ -72,7 +71,7 @@ const IdleScreen = () => {
           height="10"
           style={{ position: "absolute", top: "60px", left: 0 }}
         >
-          <ellipse id="outer-svg" cx="50%" cy="5" rx="50%" ry="5" fill="rgb(255, 255, 255)" />
+          <ellipse ref={svgRef} id="outer-svg" cx="50%" cy="5" rx="50%" ry="5" fill="rgb(255, 255, 255)" />
         </svg>
         <svg
           width="100%"
@@ -81,7 +80,7 @@ const IdleScreen = () => {
         >
           <ellipse cx="50%" cy="3" rx="15%" ry="3" fill="rgb(0, 0, 0)" />
         </svg>
-        <div className={styles.undertext}>
+        <div ref={underTextRef} className={styles.undertext}>
           PORTFOLIO
         </div>
       </div>

@@ -4,6 +4,8 @@ import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useConsoleStore } from "../../stores/GameConsoleStore";
 import { useRouteStore } from "../../stores/RouteStore";
+import model_urls from "../../data/model_urls.json"
+
 
 function GameConsole({ position, rotation, ...props }) {
     const registerConsole = useConsoleStore(s => s.registerConsole);
@@ -160,7 +162,7 @@ function GameConsole({ position, rotation, ...props }) {
           onPointerDown={handlePointerDown}
            >
             <GLTFModel
-                url={"/models/console.glb"}
+                url={model_urls.console}
                 onLoad={onLoad}
                 {...props}
             />

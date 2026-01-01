@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
-import { Vector3 } from "three";
+import model_urls from "../../data/model_urls.json"
 
 function BoxColliders() {
     const [colliders, setColliders] = useState([]);
@@ -42,7 +42,7 @@ function BoxColliders() {
 
     return(
         <>
-        <GLTFModel url="/models/boxcolliders.glb" id="colliders" onLoad={handleLoad} hide />
+        <GLTFModel url={model_urls.boxcolliders} id="colliders" onLoad={handleLoad} hide />
         <RigidBody type="fixed">
             {colliders.map((c, i) => 
                 <CuboidCollider

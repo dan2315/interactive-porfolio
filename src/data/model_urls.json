@@ -1,0 +1,6 @@
+{
+    "scene": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/scene.glb",
+    "cartridge": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/cartridge.glb",
+    "console": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/console.glb",
+    "boxcolliders": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/boxcolliders.glb"
+}

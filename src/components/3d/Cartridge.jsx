@@ -4,6 +4,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRapier } from "@react-three/rapier";
 import { useConsoleStore } from "../../stores/GameConsoleStore";
+import model_urls from "../../data/model_urls.json"
 
 const RAY_LENGTH = 3;
 
@@ -203,7 +204,7 @@ function Cartridge({id, active, ...props}) {
 
     return (
         <InteractiveGLTFModel
-            url="/models/cartridge.glb"
+            url={model_urls.cartridge}
             id={"cartridge-" + id}
             canGrab={canGrab}
             onGrabStart={handleGrabStart}

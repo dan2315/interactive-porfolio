@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import AnimatedCamera from "./3d/AnimatedCamera";
 import CameraControls from "./3d/CameraControls";
 
@@ -13,6 +13,8 @@ import BoxColliders from "./3d/BoxColliders";
 import GameConsole from "./3d/GameConsole";
 import HtmlContent from "./HtmlContent";
 import { useParams } from "react-router-dom";
+import model_urls from "../data/model_urls.json"
+
 
 function Scene() {
   const { cartridge, section } = useParams();
@@ -36,10 +38,9 @@ function Scene() {
             <AnimatedCamera view={currentView} controlRef={controlRef} />
             <ambientLight intensity={0.2} />
             <directionalLight color="white" position={[-1, 3, 5]} intensity={2} />
-
             <Physics gravity={[0, -9.81, 0]}>
               <BoxColliders/>
-              <GLTFModel id="greenHill" url="/models/scene.glb" />
+              <GLTFModel id="greenHill" url={model_urls.scene} />
               <GameConsole id="console" position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
               <Cartridge id={CartridgeType.main}
                 active = {activeCartridge === "main"}
