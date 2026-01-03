@@ -4,7 +4,7 @@ import ProjectsPage from "../pages/ProjectsPage/ProjectsPage";
 import { useConsoleStore } from "../stores/GameConsoleStore";
 import IdleScreen from "./IdleScreen";
 import ContactMePage from "../pages/ContactMePage";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import Navbar from "./Navbar";
 import { useRouteStore } from "../stores/RouteStore";
 import EditProjectsPage from "../pages/EditProjectsPage";
