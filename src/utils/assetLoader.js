@@ -1,12 +1,13 @@
-export async function loadWithProgress(url, onProgress) {
+export async function loadWithProgress(url, contentLength, onProgress) {
+  console.log("load with progress", url)
   const response = await fetch(url);
   
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
-  const contentLength = response.headers.get('content-length');
-  const total = parseInt(contentLength, 10);
+  const contentLengthRead = response.headers.get('content-length');
+  const total = contentLength??parseInt(contentLengthRead, 10);
 
   if (!total) {
     console.warn(`Content-Length missing for ${url}`);
@@ -21,7 +22,7 @@ export async function loadWithProgress(url, onProgress) {
     if (done) break;
 
     chunks.push(value);
-    receivedLength += value.length;
+    receivedLength += value.byteLength;
 
     if (onProgress) {
       onProgress({

@@ -163,6 +163,7 @@ function GameConsole({ position, rotation, ...props }) {
            >
             <GLTFModel
                 url={model_urls.console}
+                contentLength={16435992}
                 onLoad={onLoad}
                 {...props}
             />

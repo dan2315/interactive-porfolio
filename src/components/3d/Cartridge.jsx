@@ -206,6 +206,7 @@ function Cartridge({id, active, ...props}) {
         <InteractiveGLTFModel
             url={model_urls.cartridge}
             id={"cartridge-" + id}
+            contentLength={5009284}
             canGrab={canGrab}
             onGrabStart={handleGrabStart}
             onGrabMove={handleGrabMove}

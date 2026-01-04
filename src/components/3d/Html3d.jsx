@@ -19,7 +19,6 @@ function Html3d({ position, rotation, scale, children }) {
         css3dRenderer.domElement.style.zIndex = '0';
         css3dRenderer.domElement.id = "CSS3D";
 
-        glRenderer.setClearColor(0x000000, 0);
         glRenderer.domElement.style.position = 'absolute';;
         glRenderer.domElement.style.zIndex = '1';
         glRenderer.domElement.style.pointerEvents = 'none';

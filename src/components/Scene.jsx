@@ -1,5 +1,5 @@
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import AnimatedCamera from "./3d/AnimatedCamera";
 import CameraControls from "./3d/CameraControls";
 
@@ -14,6 +14,13 @@ import GameConsole from "./3d/GameConsole";
 import HtmlContent from "./HtmlContent";
 import { useParams } from "react-router-dom";
 import model_urls from "../data/model_urls.json"
+import * as THREE from "three"
+import { Environment} from "@react-three/drei";
+import DirectionalLight from "./3d/DirectionalLight";
+import PostFX from "./3d/PostFX";
+import SkyBox from "./3d/SkyBox";
+import { Water } from "three/examples/jsm/Addons.js";
+import WaterSurface from "./3d/Water";
 
 
 function Scene() {
@@ -29,18 +36,39 @@ function Scene() {
     setCurrentView("initial");
   }, []);
 
+
+
   return (
     <>
       <AssetManagerProvider>
-        <Canvas style={{ height: "100vh" }} gl={{ stencil: true }}>
+        <Canvas style={{ height: "100vh" }}
+          shadows
+          gl={{ 
+            stencil: true
+          }}
+          camera={{ fov: 75, near: 0.1, far: 1000 }}
+          onCreated={({ gl }) => {
+            gl.physicallyCorrectLights = true;
+            gl.outputColorSpace = THREE.SRGBColorSpace;
+            gl.toneMapping = THREE.ACESFilmicToneMapping;
+            gl.shadowMap.enabled = true;
+            gl.shadowMap.type = THREE.VSMShadowMap;
+          }}
+        >
           <Suspense fallback={null}>
             <CameraControls ref={controlRef} />
             <AnimatedCamera view={currentView} controlRef={controlRef} />
-            <ambientLight intensity={0.2} />
-            <directionalLight color="white" position={[-1, 3, 5]} intensity={2} />
+            <Environment
+              preset="lobby"
+              background={false}
+            />
+
+            <DirectionalLight/>
+            <SkyBox/>
+            <WaterSurface/>
+
             <Physics gravity={[0, -9.81, 0]}>
-              <BoxColliders/>
-              <GLTFModel id="greenHill" url={model_urls.scene} />
+              <GLTFModel id="greenHill" url={model_urls.scene} contentLength={20072744}/>
               <GameConsole id="console" position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
               <Cartridge id={CartridgeType.main}
                 active = {activeCartridge === "main"}
@@ -60,6 +88,7 @@ function Scene() {
                 initialPosition = {[-32.5, 4.97, 7.5]}
                 colliderSize = {[0.15, 0.025, 0.17]}
                />
+              <BoxColliders/>
             </Physics>
 
             <Html3d
@@ -69,6 +98,7 @@ function Scene() {
             >
               <HtmlContent/>
             </Html3d>
+            <PostFX/>
           </Suspense>
         </Canvas>
         {htmlRef.current}

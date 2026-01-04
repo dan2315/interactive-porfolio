@@ -42,7 +42,7 @@ function BoxColliders() {
 
     return(
         <>
-        <GLTFModel url={model_urls.boxcolliders} id="colliders" onLoad={handleLoad} hide />
+        <GLTFModel url={model_urls.boxcolliders} id="colliders" contentLength={6508} onLoad={handleLoad} hide />
         <RigidBody type="fixed">
             {colliders.map((c, i) => 
                 <CuboidCollider

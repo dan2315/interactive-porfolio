@@ -1,9 +1,9 @@
 import { useEffect, useState, useRef } from 'react';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import { loadWithProgress, createBlobURL } from '../../utils/assetLoader';
 import { useAssetManagerContext } from '../../contexts/AssetManagerContext';
+import { loadGLTF } from '../../utils/gltfLoader';
+import * as THREE from "three"
 
-function GLTFModel({ id, url, onLoad, ...props }) {
+function GLTFModel({ id, url, contentLength, onLoad, ...props }) {
   const [model, setModel] = useState(null);
   const { registerAsset, updateAssetProgress, setAssetLoaded, setAssetError } = useAssetManagerContext();
   const registered = useRef(false);
@@ -15,38 +15,46 @@ function GLTFModel({ id, url, onLoad, ...props }) {
     }
 
     let cancelled = false;
-    let blobURL = null;
 
     const loadModel = async () => {
       try {
-        const data = await loadWithProgress(url, ({ loaded, total, progress }) => {
-          if (!cancelled) {
-            updateAssetProgress(id, { loaded, total, progress });
-          }
+        const gltf = await loadGLTF(url, contentLength, ({ loaded, total, progress }) => {
+          updateAssetProgress(id, { loaded, total, progress });
         });
 
         if (cancelled) return;
 
-        blobURL = createBlobURL(data, 'model/gltf-binary');
+        gltf.scene.traverse((obj) => {
+          if (!obj.isMesh) return;
 
-        const loader = new GLTFLoader();
-        loader.load(
-          blobURL,
-          (gltf) => {
-            if (!cancelled) {
-              setModel(gltf.scene);
-              setAssetLoaded(id);
-              onLoad?.(gltf);
-            }
-          },
-          undefined,
-          (error) => {
-            if (!cancelled) {
-              console.error(`Error loading ${id}:`, error);
-              setAssetError(id, error.message);
-            }
+          obj.castShadow = true;
+          obj.receiveShadow = true;
+
+          const mat = obj.material;
+          if (!mat) return;
+
+          if (mat.map) {
+            mat.map.colorSpace = THREE.SRGBColorSpace;
+            mat.map.flipY = false;
           }
-        );
+
+          if (mat.emissiveMap) {
+            mat.emissiveMap.colorSpace = THREE.SRGBColorSpace;
+            mat.emissiveMap.flipY = false;
+          }
+
+          if (mat.normalMap) mat.normalMap.flipY = false;
+          if (mat.roughnessMap) mat.roughnessMap.flipY = false;
+          if (mat.metalnessMap) mat.metalnessMap.flipY = false;
+          if (mat.aoMap) mat.aoMap.flipY = false;
+
+          mat.needsUpdate = true;
+        });
+
+        setModel(gltf.scene);
+        setAssetLoaded(id);
+        onLoad?.(gltf);
+
       } catch (error) {
         if (!cancelled) {
           console.error(`Error downloading ${id}:`, error);
@@ -59,11 +67,8 @@ function GLTFModel({ id, url, onLoad, ...props }) {
 
     return () => {
       cancelled = true;
-      if (blobURL) {
-        URL.revokeObjectURL(blobURL);
-      }
     };
-  }, [id, url, registerAsset, updateAssetProgress, setAssetLoaded, setAssetError, onLoad]);
+  }, [id, url, registerAsset, updateAssetProgress, setAssetLoaded, setAssetError, onLoad, contentLength]);
 
   return model && !props.hide ? <primitive object={model} {...props} /> : null;
 }
