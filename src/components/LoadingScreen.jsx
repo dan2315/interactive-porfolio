@@ -3,6 +3,7 @@ import { randomInt } from '../utils/random';
 import styles from './LoadingScreen.module.css';
 import React, { useEffect, useMemo, useState } from "react";
 import sprites from '../data/sprites.json';
+import { useSceneStore } from '../stores/SceneStore';
 
 const fruitIds = [2, 3, 4, 5, 6];
 const ghostIds = [7, 8, 9, 10];
@@ -107,12 +108,10 @@ function LoadingScreen() {
     }, [totalProgress]);
 
     useEffect(() => {
-        if (isComplete) {
-            setTimeout(() => {
-                setIsVisible(false);
-            }, 500);
+        if (isComplete && displayProgress >= 100) {
+            setIsVisible(false);
         }
-    }, [totalProgress, isComplete]);
+    }, [displayProgress, isComplete]);
 
     useEffect(() => {
         setBarObjects(objects => {

@@ -1,9 +1,10 @@
-import { Outlines, useCursor } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { CuboidCollider, RigidBody } from "@react-three/rapier";
-import { useEffect, useRef, useState } from "react";
+import { CuboidCollider, CylinderCollider, RigidBody, useRapier } from "@react-three/rapier";
+import { useCallback, useEffect, useRef, useState } from "react";
 import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
+import { useSceneStore } from "../../stores/SceneStore";
+import { ModifiedSelect } from "./SelectionAPI";
 
 function InteractiveGLTFModel({
   id,
@@ -12,12 +13,13 @@ function InteractiveGLTFModel({
   onGrabStart,
   onGrabMove,
   onGrabEnd,
-  canGrab,
+  canGrab = true,
   meshRef,
   rigidRef,
   visualOffset,
   initialPosition,
   colliderSize,
+  colliderType,
   ...props
 }) {
   const rigidBody = useRef();
@@ -25,12 +27,36 @@ function InteractiveGLTFModel({
   const { camera } = useThree();
   const [hovered, setHovered] = useState(false);
   const dragging = useRef(false);
-
-  useCursor(hovered && canGrab);
-
+  const resetTrigger = useSceneStore(s => s.resetTrigger);
+  const {rapier} = useRapier();
+ 
   const plane = useRef(new THREE.Plane());
   const raycaster = useRef(new THREE.Raycaster());
   const mouse = useRef(new THREE.Vector2());
+
+  useGrabCursor({
+    hovered,
+    dragging: dragging.current,
+    canGrab
+  });
+
+  function useGrabCursor({ hovered, dragging, canGrab }) {
+    useEffect(() => {
+      const body = document.body;
+
+      body.classList.remove("cursor-grab", "cursor-grabbing");
+
+      if (dragging) {
+        body.classList.add("cursor-grabbing");
+      } else if (hovered && canGrab) {
+        body.classList.add("cursor-grab");
+      }
+
+      return () => {
+        body.classList.remove("cursor-grab", "cursor-grabbing");
+      };
+    }, [hovered, dragging, canGrab]);
+  }
 
   function updateMouse(mouse, e) {
     mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
@@ -61,6 +87,8 @@ function InteractiveGLTFModel({
 
     const handlePointerUp = () => {
       if (!dragging.current) return;
+      document.body.classList.remove("cursor-grab", "cursor-grabbing");
+
       dragging.current = false;
       onGrabEnd?.();
     };
@@ -76,24 +104,29 @@ function InteractiveGLTFModel({
     };
   }, [onGrabEnd]);
 
+  const reset = useCallback(() => {
+    const rb = rigidBody.current;
+    if (!rb) return;
+
+    const position = new THREE.Vector3(
+        initialPosition[0],
+        initialPosition[1],
+        initialPosition[2]
+    );
+    const rotation = new THREE.Quaternion(0, 0, 0, 1);
+    rb.setTranslation(position, true);
+    rb.setRotation(rotation, true);
+    rb.setLinvel({ x: 0, y: 0, z: 0 }, true);
+    rb.setAngvel({ x: 0, y: 0, z: 0 }, true);
+    rb.wakeUp();
+
+  }, [initialPosition.x, initialPosition.y, initialPosition.z, rapier.RigidBodyType.KinematicPositionBased]);
+
   useEffect(() => {
-    if (!groupRef.current || !hovered) return;
-
-    groupRef.current.traverse((child) => {
-      if (child.isMesh) {
-        child.userData.outlineEnabled = true;
-      }
-    });
-
-    return () => {
-      if (!groupRef.current) return;
-      groupRef.current.traverse((child) => {
-        if (child.isMesh) {
-          child.userData.outlineEnabled = false;
-        }
-      });
-    };
-  }, [hovered]);
+    if (resetTrigger > 0) {
+      setTimeout(reset, 0);
+    } 
+  }, [resetTrigger])
 
   useFrame(() => {
     if (!dragging.current) return;
@@ -120,6 +153,13 @@ function InteractiveGLTFModel({
     onGrabMove?.(mouse.current);
   });
 
+  const collider = () => {
+    switch (colliderType) {
+      case "cylinder": return <CylinderCollider args={colliderSize}/>
+      default: return <CuboidCollider args={colliderSize} />
+    }
+  }
+
   return (
     <RigidBody 
       ref={(rb) => {
@@ -129,29 +169,21 @@ function InteractiveGLTFModel({
       position={initialPosition}
       type="dynamic"
     >
-      <CuboidCollider args={colliderSize} />
-      <group
-        ref={(g) => {
-          groupRef.current = g;
-          if (meshRef) meshRef.current = g;
-        }}
-        position={visualOffset}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-        onPointerDown={onPointerDown}
-      >
-        <GLTFModel id={id} url={url} onLoad={onLoad} {...props} />
-        {hovered && (
-          <Outlines 
-            thickness={5} 
-            color="cyan" 
-            screenspace
-            opacity={1}
-            transparent
-            angle={Math.PI}
-          />
-        )}
-      </group>
+      {collider()}
+      <ModifiedSelect enabled={hovered && !dragging.current && canGrab}>
+        <group
+          ref={(g) => {
+            groupRef.current = g;
+            if (meshRef) meshRef.current = g;
+          }}
+          position={visualOffset}
+          onPointerOver={() => setHovered(true)}
+          onPointerOut={() => setHovered(false)}
+          onPointerDown={onPointerDown}
+        >
+            <GLTFModel id={id} url={url} onLoad={onLoad} {...props} />
+        </group>
+      </ModifiedSelect>
     </RigidBody>
   );
 }

@@ -1,0 +1,30 @@
+{
+    "scene": {
+        "path":"https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/scene.glb",
+        "contentLength": 16541424
+    },
+    "cartridge": {
+        "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/cartridge.glb",
+        "contentLength": 776468
+    },
+    "console": {
+         "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/console.glb",
+         "contentLength": 3448664
+    },
+    "boxcolliders": { 
+        "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/boxcolliders.glb",
+        "contentLength": 8060
+    },
+    "resetbutton": { 
+        "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/resetbutton.glb",
+        "contentLength": 95684
+    },
+    "cup": { 
+        "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/cup.glb",
+        "contentLength": 106908
+    },
+    "duck": { 
+        "path": "https://cdn.jsdelivr.net/gh/dan2315/interactive-porfolio@master/public/models/duck.glb",
+        "contentLength": 266608 
+    }
+}

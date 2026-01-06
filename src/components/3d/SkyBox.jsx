@@ -16,7 +16,6 @@ function SkyBox() {
   );
 
   const { scene } = useThree();
-  console.log("Setting texture",textureCube)
   scene.background = textureCube[0];
 
   return null;

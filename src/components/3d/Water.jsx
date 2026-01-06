@@ -9,12 +9,12 @@ function WaterSurface() {
   const waterRef = useRef();
   const { scene } = useThree();
 
-  const waterGeometry = useMemo(() => new THREE.PlaneGeometry(500, 500), []);
+  const waterGeometry = useMemo(() => new THREE.PlaneGeometry(400, 400), []);
 
   const water = useMemo(() => {
     return new Water(waterGeometry, {
-      textureWidth: 512,
-      textureHeight: 512,
+      textureWidth: 256,
+      textureHeight: 256,
       waterNormals: new THREE.TextureLoader().load(
         '/textures/water_normals.jpeg',
         (texture) => {

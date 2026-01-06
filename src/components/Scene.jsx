@@ -1,7 +1,6 @@
 import { Suspense, useEffect, useRef, useState } from "react";
-import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import AnimatedCamera from "./3d/AnimatedCamera";
-import CameraControls from "./3d/CameraControls";
+import { Canvas } from "@react-three/fiber";
+import ControlledCamera from "./3d/AnimatedCamera";
 
 import Html3d from "./3d/Html3d";
 import GLTFModel from "./3d/GLTFModel";
@@ -13,20 +12,21 @@ import BoxColliders from "./3d/BoxColliders";
 import GameConsole from "./3d/GameConsole";
 import HtmlContent from "./HtmlContent";
 import { useParams } from "react-router-dom";
-import model_urls from "../data/model_urls.json"
+import models from "../data/models.json"
 import * as THREE from "three"
-import { Environment} from "@react-three/drei";
+import { Environment, Outlines} from "@react-three/drei";
 import DirectionalLight from "./3d/DirectionalLight";
 import PostFX from "./3d/PostFX";
 import SkyBox from "./3d/SkyBox";
-import { Water } from "three/examples/jsm/Addons.js";
 import WaterSurface from "./3d/Water";
+import ResetButton from "./3d/ResetButton";
+import { ModifiedSelect, ModifiedSelection } from "./3d/SelectionAPI";
+import InteractiveGLTFModel from "./3d/InteractiveGLTFModel";
 
 
 function Scene() {
   const { cartridge, section } = useParams();
   const [currentView, setCurrentView] = useState("initial");
-  const controlRef = useRef();
   const htmlRef = useRef();
 
   const activeCartridge = cartridge ?? null;
@@ -36,28 +36,25 @@ function Scene() {
     setCurrentView("initial");
   }, []);
 
-
-
   return (
     <>
       <AssetManagerProvider>
         <Canvas style={{ height: "100vh" }}
           shadows
           gl={{ 
-            stencil: true
+            stencil: true,
+            toneMapping: THREE.ACESFilmicToneMapping,
+            toneMappingExposure: 1,
+            outputColorSpace: THREE.SRGBColorSpace 
           }}
           camera={{ fov: 75, near: 0.1, far: 1000 }}
           onCreated={({ gl }) => {
             gl.physicallyCorrectLights = true;
-            gl.outputColorSpace = THREE.SRGBColorSpace;
-            gl.toneMapping = THREE.ACESFilmicToneMapping;
-            gl.shadowMap.enabled = true;
-            gl.shadowMap.type = THREE.VSMShadowMap;
           }}
         >
           <Suspense fallback={null}>
-            <CameraControls ref={controlRef} />
-            <AnimatedCamera view={currentView} controlRef={controlRef} />
+            <ModifiedSelection>
+            <ControlledCamera view={currentView}/>
             <Environment
               preset="lobby"
               background={false}
@@ -68,26 +65,44 @@ function Scene() {
             <WaterSurface/>
 
             <Physics gravity={[0, -9.81, 0]}>
-              <GLTFModel id="greenHill" url={model_urls.scene} contentLength={20072744}/>
-              <GameConsole id="console" position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
-              <Cartridge id={CartridgeType.main}
+              <GLTFModel id="greenHill" url={models.scene.path} contentLength={models.scene.contentLength}/>
+              <GameConsole position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
+               <Cartridge id={CartridgeType.main}
                 active = {activeCartridge === "main"}
                 visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.5, 5.07, 7.5]}
+                initialPosition = {[-32.8, 5.07, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
-               />
-               <Cartridge id={CartridgeType.additional}
+                />
+                <Cartridge id={CartridgeType.additional}
                 active = {activeCartridge === "additional"}
                 visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.5, 4.87, 7.5]}
+                initialPosition = {[-32.8, 4.87, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
-               />
-               <Cartridge id={CartridgeType.admin}
+                />
+                <Cartridge id={CartridgeType.admin}
                 active = {activeCartridge === "admin"}
                 visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.5, 4.97, 7.5]}
+                initialPosition = {[-32.8, 4.97, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
-               />
+                />
+               <InteractiveGLTFModel
+                id={"cup"}
+                url={models.cup.path}
+                contentLength={models.cup.contentLength}
+                initialPosition={[-32.5, 5, 7.7]}
+                visualOffset = {[0, -0.09, 0]} 
+                colliderSize = {[0.12, 0.1]}
+                colliderType={"cylinder"}
+                />
+                <InteractiveGLTFModel
+                id={"duck"}
+                url={models.duck.path}
+                contentLength={models.duck.contentLength}
+                initialPosition={[-34.2, 5, 5.8]}
+                colliderSize = {[0.1, 0.1, 0.1]}
+                visualOffset = {[0, -0.09, 0]} 
+                />
+               <ResetButton/>
               <BoxColliders/>
             </Physics>
 
@@ -95,10 +110,11 @@ function Scene() {
               position={[-33.244, 5.475, 6.467]}
               rotation={[0, (Math.PI / 180) * -30, 0]}
               scale={[0.0009, 0.0009, 0.0009]}
-            >
+              >
               <HtmlContent/>
             </Html3d>
             <PostFX/>
+          </ModifiedSelection>
           </Suspense>
         </Canvas>
         {htmlRef.current}
