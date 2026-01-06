@@ -6,7 +6,7 @@ function ResetButton() {
     const resetScene = useSceneStore(s => s.triggerReset);
    return <GLTFModel
         id={"resetbutton"}
-        url={models.resetbutton.contentLength}
+        url={models.resetbutton.path}
         contentLength={models.resetbutton.contentLength}
         position={[-32.6, 4.75, 6.8]}
         rotation={[0, -1, 0]}
