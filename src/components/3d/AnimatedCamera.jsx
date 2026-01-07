@@ -3,6 +3,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { useEffect, useRef } from "react";
 import * as THREE from 'three'
 import { BezierHelper, ControlPointHelper } from "../dev/3d/DebugHelpers";
+import { useInputStore } from "../../stores/InputStores";
 
 const CAMERA_VIEWS = {
   initial:  new THREE.CubicBezierCurve3(
@@ -16,6 +17,8 @@ const CAMERA_VIEWS = {
   close: { position: [2, 1, 2], lookAt: [0, 1, 0] },
 };
 
+const MAX_LERP_ZOOM_DISTANCE = 0.2;
+
 const MAX_YAW = THREE.MathUtils.degToRad(16);
 const MAX_PITCH = THREE.MathUtils.degToRad(22);
 
@@ -26,6 +29,7 @@ function ControlledCamera({ view, debug }) {
   const { camera } = useThree();
   const progress = useRef(0);
   const targetProgress = useRef(0);
+  const { getOwner: owner, claim, release } = useInputStore();
 
   const rotation = useRef({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
@@ -43,11 +47,16 @@ function ControlledCamera({ view, debug }) {
   useEffect(() => {
     const onWheel = (e) => {
       targetProgress.current += e.deltaY * 0.0005
-      targetProgress.current = THREE.MathUtils.clamp(
-        targetProgress.current,
-        0,
-        1
-      )
+      targetProgress.current = THREE.MathUtils.clamp(targetProgress.current, 0, 1)
+
+      if (e.deltaY > 0 && targetProgress.current > 0.05) {
+        targetProgress.current = 1;
+        targetRotation.current = { x: 0, y: 0}
+      } else if (e.deltaY < 0 && targetProgress.current < 0.95) {
+        targetProgress.current = 0;
+        targetRotation.current = { x: 0, y: 0}
+      }
+
     }
 
     let lastX = 0
@@ -55,20 +64,23 @@ function ControlledCamera({ view, debug }) {
     let isDown = false
 
     const onMouseDown = (e) => {
+      if (!claim("camera")) return
       isDown = true
       lastX = e.clientX
       lastY = e.clientY
+      e.stopPropagation();
     }
 
     const onMouseUp = () => {
       isDown = false
+      release("camera")
     }
 
     const onMouseMove = (e) => {
+      if (owner() !== "camera") return;
       if (!isDown) return
-
-      const dx = e.clientX - lastX
-      const dy = e.clientY - lastY
+      const dx =  lastX - e.clientX
+      const dy =  lastY - e.clientY
       lastX = e.clientX
       lastY = e.clientY
 
@@ -101,22 +113,30 @@ function ControlledCamera({ view, debug }) {
       )
     }
 
+    const disableContextMenu = (e) => {
+      e.preventDefault();
+    };
+
     window.addEventListener('wheel', onWheel, { passive: true })
-    window.addEventListener("mousedown", onMouseDown)
-    window.addEventListener("mouseup", onMouseUp)
-    window.addEventListener("mousemove", onMouseMove)
+    window.addEventListener("pointerdown", onMouseDown)
+    window.addEventListener("pointerup", onMouseUp)
+    window.addEventListener("pointermove", onMouseMove)
 
     window.addEventListener('touchstart', onTouchStart, { passive: true })
     window.addEventListener('touchmove', onTouchMove, { passive: true })
 
-    return () => {
-      window.removeEventListener("mousedown", onMouseDown)
-      window.removeEventListener("mouseup", onMouseUp)
-      window.removeEventListener("mousemove", onMouseMove)
+    window.addEventListener("contextmenu", disableContextMenu);
 
+    return () => {
       window.removeEventListener('wheel', onWheel)
+      window.removeEventListener("pointerdown", onMouseDown)
+      window.removeEventListener("pointerup", onMouseUp)
+      window.removeEventListener("pointermove", onMouseMove)
+
       window.removeEventListener('touchstart', onTouchStart)
       window.removeEventListener('touchmove', onTouchMove)
+
+      window.removeEventListener("contextmenu", disableContextMenu);
     }
   }, [])
 
@@ -125,11 +145,18 @@ function ControlledCamera({ view, debug }) {
   useFrame((_, delta) => {
     if (debug) return;
 
+    let distance = targetProgress.current - progress.current;
+    if (distance < 0) {
+      distance = Math.max(distance, -MAX_LERP_ZOOM_DISTANCE)
+    } else {
+      distance = Math.min(distance, MAX_LERP_ZOOM_DISTANCE)
+    }
     progress.current = THREE.MathUtils.lerp(
       progress.current,
-      targetProgress.current,
+      progress.current + distance,
       0.08
     );
+
     rotation.current.x = THREE.MathUtils.lerp(
       rotation.current.x,
       targetRotation.current.x,

@@ -48,8 +48,6 @@ function adminFetch(path) {
         body: body,
       });
 
-      console.log("admin res", res)
-      
       if (res.status === 401 || res.status === 403) {
         store.clearApiKey?.();
         throw new Error("INVALID_ADMIN_KEY");

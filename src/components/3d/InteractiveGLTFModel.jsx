@@ -5,6 +5,7 @@ import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 import { useSceneStore } from "../../stores/SceneStore";
 import { ModifiedSelect } from "./SelectionAPI";
+import { useInputStore } from "../../stores/InputStores";
 
 function InteractiveGLTFModel({
   id,
@@ -33,6 +34,7 @@ function InteractiveGLTFModel({
   const plane = useRef(new THREE.Plane());
   const raycaster = useRef(new THREE.Raycaster());
   const mouse = useRef(new THREE.Vector2());
+  const { getOwner: owner, claim, release } = useInputStore();
 
   useGrabCursor({
     hovered,
@@ -65,32 +67,38 @@ function InteractiveGLTFModel({
 
   const onPointerDown = (e) => {
     if (!canGrab) return;
+    if (!claim("objinteraction")) return
+    
     dragging.current = true;
-    e.stopPropagation();
     updateMouse(mouse, e);
     const bodyPos = rigidBody.current.translation();
     const worldPos = new THREE.Vector3(bodyPos.x, bodyPos.y, bodyPos.z);
-
+    
     const normal = new THREE.Vector3();
     camera.getWorldDirection(normal);
-
+    
     plane.current.setFromNormalAndCoplanarPoint(normal, worldPos);
-
+    
     onGrabStart?.();
+    e.stopPropagation();
   };
 
   useEffect(() => {
     const handlePointerMove = (e) => {
+      if (owner() !== "objinteraction")
       if (!dragging.current) return;
       updateMouse(mouse, e);
+      e.stopPropagation();
     };
 
-    const handlePointerUp = () => {
+    const handlePointerUp = (e) => {
       if (!dragging.current) return;
+      release("objinteraction");
       document.body.classList.remove("cursor-grab", "cursor-grabbing");
-
+      
       dragging.current = false;
       onGrabEnd?.();
+      e.stopPropagation();
     };
 
     window.addEventListener("pointermove", handlePointerMove);
@@ -177,7 +185,7 @@ function InteractiveGLTFModel({
             if (meshRef) meshRef.current = g;
           }}
           position={visualOffset}
-          onPointerOver={() => setHovered(true)}
+          onPointerOver={(e) => {setHovered(true);e.stopPropagation()}}
           onPointerOut={() => setHovered(false)}
           onPointerDown={onPointerDown}
         >

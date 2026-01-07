@@ -9,6 +9,7 @@ function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props })
   const [model, setModel] = useState(null);
   const { registerAsset, updateAssetProgress, setAssetLoaded, setAssetError } = useAssetManagerContext();
   const registered = useRef(false);
+  const loaded = useRef(false);
 
   useEffect(() => {
     if (!registered.current) {
@@ -19,6 +20,7 @@ function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props })
     let cancelled = false;
 
     const loadModel = async () => {
+      if (loaded.current) return;
       try {
         const gltf = await loadGLTF(url, contentLength, ({ loaded, total, progress }) => {
           updateAssetProgress(id, { loaded, total, progress });
@@ -55,6 +57,7 @@ function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props })
         setModel(gltf.scene);
         setAssetLoaded(id);
         onLoad?.(gltf);
+        loaded.current = true;
 
       } catch (error) {
         if (!cancelled) {

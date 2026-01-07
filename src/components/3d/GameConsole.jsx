@@ -1,13 +1,16 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
 import { useConsoleStore } from "../../stores/GameConsoleStore";
 import { useRouteStore } from "../../stores/RouteStore";
 import models from "../../data/models.json"
+import { ModifiedSelect } from "./SelectionAPI";
 
 
 function GameConsole({ position, rotation, ...props }) {
+    const [hovered, setHovered] = useState(false);
+    const hoverDelay = useRef();
     const registerConsole = useConsoleStore(s => s.registerConsole);
     const { setCartridgeId } = useConsoleStore()
     const navigate = useRouteStore(r => r.setRoute);
@@ -39,8 +42,7 @@ function GameConsole({ position, rotation, ...props }) {
         }
     };
 
-      useEffect(() => {
-
+    useEffect(() => {
         return () => {
             useConsoleStore.getState().clearConsole();
         };
@@ -144,31 +146,50 @@ function GameConsole({ position, rotation, ...props }) {
     };
 
     const handlePointerDown = (e) => {
-      let obj = e.object;
-      while (obj) {
-        if (obj.userData?.onPointerDown) {
-          obj.userData.onPointerDown(e);
-          break;
-        }
-        obj = obj.parent;
-      }
+        e.stopPropagation();
+        consoleApi.eject();
     }
 
+    const onHoverStart = (e) => {
+        e.stopPropagation();
+
+        if (hoverDelay.current) {
+            clearTimeout(hoverDelay.current);
+            hoverDelay.current = null;
+        }
+
+        setHovered(true);
+    };
+
+    const onHoverEnd = (e) => {
+        e.stopPropagation();
+
+        hoverDelay.current = setTimeout(() => {
+            setHovered(false);
+            hoverDelay.current = null;
+        }, 50)
+    };
+
     return (
+        <ModifiedSelect enabled={hovered}>
+
         <group 
-          ref={groupRef}
-          position={position}
-          rotation={rotation}
-          onPointerDown={handlePointerDown}
+            ref={groupRef}
+            position={position}
+            rotation={rotation}
+            onPointerOver={onHoverStart}
+            onPointerOut={onHoverEnd}
+            onPointerDown={handlePointerDown}
            >
-            <GLTFModel
-                id="console"
-                url={models.console.path}
-                contentLength={models.console.contentLength}
-                onLoad={onLoad}
-                {...props}
-            />
+                <GLTFModel
+                    id="console"
+                    url={models.console.path}
+                    contentLength={models.console.contentLength}
+                    onLoad={onLoad}
+                    {...props}
+                />
         </group>
+        </ModifiedSelect>
     );
 }
 

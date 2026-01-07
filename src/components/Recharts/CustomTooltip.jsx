@@ -1,6 +1,5 @@
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
-    console.log(payload)
     const data = payload[0];
     return (
       <div style={{
