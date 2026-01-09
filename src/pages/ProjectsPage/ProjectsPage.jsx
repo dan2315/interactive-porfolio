@@ -10,7 +10,7 @@ import useProjectsData from '../../hooks/useProjectsData';
 
 function ProjectsPage() {
     const { data: projectsData, isLoading } = useProjectsData();
-    const [projects, setProjects] = useState(null);
+    const [projects, setProjects] = useState(projectsData);
     const [selectedProject, setSelectedProject] = useState();
     const [filterTechs, setFilterTechs] = useState([]);
     const [open, setOpen] = useState(false);
@@ -50,7 +50,7 @@ function ProjectsPage() {
         );
     }
     
-    if (isLoading) return <PageLoading/>;
+    if (!projects) return <PageLoading/>;
 
     const allTechnologies = Array.from(
       new Set(projects.flatMap(p => p.technologies))
@@ -93,8 +93,6 @@ function ProjectsPage() {
                 : [...prev, tech]
         );
     };
-
-    console.log("drop", sortDropdown.current)
 
     return (
         <>

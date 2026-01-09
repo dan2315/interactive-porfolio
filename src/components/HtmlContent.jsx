@@ -60,8 +60,8 @@ const routes = {
 };
 
 function HtmlContent({ initSection }) {
-  const prevCartridgeId = useRef(-1);
-  const isInit = prevCartridgeId.current === -1;
+  const prevCartridgeId = useRef(null);
+  const isInit = prevCartridgeId.current === null;
   const route = useRouteStore((s) => s.route);
   const section = route?.split('/')[2];
   const navigate = useRouteStore(r => r.setRoute);
