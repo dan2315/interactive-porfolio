@@ -10,7 +10,7 @@ import useProjectsData from '../../hooks/useProjectsData';
 
 function ProjectsPage() {
     const { data: projectsData, isLoading } = useProjectsData();
-    const [projects, setProjects] = useState(null);
+    const [projects, setProjects] = useState(projectsData);
     const [selectedProject, setSelectedProject] = useState();
     const [filterTechs, setFilterTechs] = useState([]);
     const [open, setOpen] = useState(false);
@@ -21,6 +21,7 @@ function ProjectsPage() {
     const navigate = useRouteStore(s => s.setRoute);
     const sortDropdown = useRef();
 
+    console.log("ABOBOBOBABA", projectsData)
     useEffect(() => {
         if (projectsData) setProjects(projectsData);
     }, [projectsData]);
@@ -50,7 +51,7 @@ function ProjectsPage() {
         );
     }
     
-    if (isLoading) return <PageLoading/>;
+    if (!projects) return <PageLoading/>;
 
     const allTechnologies = Array.from(
       new Set(projects.flatMap(p => p.technologies))
