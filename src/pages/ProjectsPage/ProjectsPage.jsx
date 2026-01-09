@@ -21,6 +21,7 @@ function ProjectsPage() {
     const navigate = useRouteStore(s => s.setRoute);
     const sortDropdown = useRef();
 
+    console.log("ABOBOBOBABA", projectsData)
     useEffect(() => {
         if (projectsData) setProjects(projectsData);
     }, [projectsData]);
