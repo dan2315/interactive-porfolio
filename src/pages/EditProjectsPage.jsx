@@ -29,7 +29,6 @@ export default function EditProjectsPage() {
 
   const handleCreate = async (project) => {
     const result = await projectsService.admin.create(project);
-    console.log(result)
     setCreatingNew(false);
     loadProjects();
   }

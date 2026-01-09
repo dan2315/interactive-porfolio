@@ -9,7 +9,6 @@ function AdminLoginPage() {
 
   const handleLogin = async () => {
     const valid = await login(key);
-    console.log(valid)
     if (!valid) setError("Invalid API key");
   };
 

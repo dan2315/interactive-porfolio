@@ -47,7 +47,6 @@ function Cartridge({type, active, ...props}) {
                     mat.map = coverTexture;
                     mat.needsUpdate = true;
                     mat.map.flipY = false;
-                    console.log(mat);
                 }
             })
         })

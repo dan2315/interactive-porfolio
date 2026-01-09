@@ -90,11 +90,6 @@ function GameConsole({ position, rotation, ...props }) {
             groupRef.current.userData.insertedRotation = insertedRot;
             groupRef.current.userData.ejectedPosition = ejectedPos;
             groupRef.current.userData.ejectedRotation = ejectedRot;
-
-            window.console.log("Console positions initialized:", {
-                insert: insertPos,
-                inserted: insertedPos,
-            });
             
             registerConsole(consoleApi);
             isInitialized.current = true;

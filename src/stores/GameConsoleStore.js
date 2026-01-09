@@ -13,7 +13,6 @@ export const useConsoleStore = create((set) => ({
   },
 
   setCartridgeId: (id) =>{
-    console.log(id);
     set({ cartridgeId: id });
   },
   

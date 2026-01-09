@@ -1,5 +1,5 @@
 export async function loadWithProgress(url, contentLength, onProgress) {
-  console.log("load with progress", url)
+  console.log("Load with progress", url)
   const response = await fetch(url);
   
   if (!response.ok) {

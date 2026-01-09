@@ -7,51 +7,35 @@ import { useRouteStore } from '../../stores/RouteStore';
 import DetailedProjectView from './components/DetailedProjectView';
 import { FaArrowDown, FaArrowUp, FaSearch } from 'react-icons/fa';
 import useProjectsData from '../../hooks/useProjectsData';
+import { useQueryClient } from '@tanstack/react-query';
 
 function ProjectsPage() {
-    const { data: projectsData, isLoading } = useProjectsData();
-    const [projects, setProjects] = useState(projectsData);
+    const { data: projects, isLoading } = useProjectsData();
     const [selectedProject, setSelectedProject] = useState();
     const [filterTechs, setFilterTechs] = useState([]);
     const [open, setOpen] = useState(false);
     const [sortBy, setSortBy] = useState(null);
     const [sortOrder, setSortOrder] = useState('desc');
     const [searchQuery, setSearchQuery] = useState('');
+    const queryClient = useQueryClient();
     const route = useRouteStore(s => s.route);
     const navigate = useRouteStore(s => s.setRoute);
     const sortDropdown = useRef();
 
-    console.log("ABOBOBOBABA", projectsData)
-    useEffect(() => {
-        if (projectsData) setProjects(projectsData);
-    }, [projectsData]);
-
-    useEffect(() => {
-        const parts = route?.split('/');
-        const projectSlug = parts?.[3];
-        
-        if (projectSlug) {
-            const project = projects.find(p => p.slug === projectSlug);
-            setSelectedProject(project);
-        }
-    }, [projects, route])
 
     async function toggleReaction(slug, emoji) {
-        const updatedReactions = await projectsService.public.toggleReaction(slug, emoji)
-        setProjects(prevProjects =>
-            prevProjects.map(project => {
-                if (project.slug === updatedReactions.projectSlug) {
-                    return {
-                        ...project,
-                        reactions: updatedReactions
-                    };
-                }
-                return project;
-            })
+        const updatedReactions = await projectsService.public.toggleReaction(slug, emoji);
+
+        queryClient.setQueryData(['projects'], (oldProjects) =>
+            oldProjects.map(p =>
+                p.slug === updatedReactions.projectSlug
+                    ? { ...p, reactions: updatedReactions }
+                    : p
+            )
         );
     }
     
-    if (!projects) return <PageLoading/>;
+    if (isLoading) return <PageLoading/>;
 
     const allTechnologies = Array.from(
       new Set(projects.flatMap(p => p.technologies))

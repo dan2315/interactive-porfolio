@@ -3,7 +3,6 @@ import styles from "./DetailedProjectView.module.css"
 
 function DetailedProjectView({ project, back, toggleReaction }) {
     if (!project) return;
-    console.log("Slug", project)
 
     return (
         <div className={styles.dimArea}>

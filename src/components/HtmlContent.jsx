@@ -72,11 +72,14 @@ function HtmlContent({ initSection }) {
   const isAdminPage = cartridgeId === 2; 
 
   useEffect(() => {
+    console.log("che", prevCartridgeId.current);
     if (!cartridgeRoutes) {}
     else if (isInit && !!cartridgeRoutes.routes[initSection]) {
+      console.log("init", cartridgeId);
       navigate(`/${cartridgeRoutes.base}/${initSection}`);
     } 
     else if (prevCartridgeId.current !== cartridgeId) {
+      console.log("default", cartridgeId);
       const defaultSection = cartridgeRoutes && Object.keys(cartridgeRoutes.routes)[0];
       navigate(`/${cartridgeRoutes.base}/${defaultSection}`);
     }
