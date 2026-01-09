@@ -4,6 +4,7 @@ import Scene from "./components/Scene";
 import RouteManager from "./components/RouteManager";
 
 function App() {
+    
     return(
     <BrowserRouter>
         <RouteManager/>

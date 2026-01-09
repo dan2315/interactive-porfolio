@@ -27,9 +27,10 @@ const TOUCH_SENSITIVITY = 0.004;
 
 function ControlledCamera({ view, debug }) {
   const { camera } = useThree();
+  const { getOwner: owner, claim, release } = useInputStore();
+
   const progress = useRef(0);
   const targetProgress = useRef(0);
-  const { getOwner: owner, claim, release } = useInputStore();
 
   const rotation = useRef({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
@@ -45,7 +46,7 @@ function ControlledCamera({ view, debug }) {
   </>
 
   useEffect(() => {
-    const onWheel = (e) => {
+    const handleOnWheel = (e) => {
       targetProgress.current += e.deltaY * 0.0005
       targetProgress.current = THREE.MathUtils.clamp(targetProgress.current, 0, 1)
 
@@ -56,7 +57,6 @@ function ControlledCamera({ view, debug }) {
         targetProgress.current = 0;
         targetRotation.current = { x: 0, y: 0}
       }
-
     }
 
     let lastX = 0
@@ -78,6 +78,7 @@ function ControlledCamera({ view, debug }) {
 
     const onMouseMove = (e) => {
       if (owner() !== "camera") return;
+      if (targetProgress.current < 0.5 && !(e.buttons & 2)) return;
       if (!isDown) return
       const dx =  lastX - e.clientX
       const dy =  lastY - e.clientY
@@ -117,7 +118,16 @@ function ControlledCamera({ view, debug }) {
       e.preventDefault();
     };
 
-    window.addEventListener('wheel', onWheel, { passive: true })
+
+    const onWheel = (e) => {
+      if (!e.altKey) {
+        handleOnWheel(e);
+        e.preventDefault();
+      } else {
+        e.stopImmediatePropagation();
+      }
+    };
+    window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener("pointerdown", onMouseDown)
     window.addEventListener("pointerup", onMouseUp)
     window.addEventListener("pointermove", onMouseMove)
@@ -139,8 +149,6 @@ function ControlledCamera({ view, debug }) {
       window.removeEventListener("contextmenu", disableContextMenu);
     }
   }, [])
-
-
 
   useFrame((_, delta) => {
     if (debug) return;

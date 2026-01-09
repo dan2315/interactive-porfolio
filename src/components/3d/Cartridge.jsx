@@ -5,6 +5,9 @@ import * as THREE from "three";
 import { useRapier } from "@react-three/rapier";
 import { useConsoleStore } from "../../stores/GameConsoleStore";
 import models from "../../data/models.json"
+import images from "../../data/images.json"
+
+const textureLoader = new THREE.TextureLoader();
 
 const RAY_LENGTH = 3;
 
@@ -15,7 +18,7 @@ const CartridgeState = Object.freeze({
   EJECTING: 3,
 });
 
-function Cartridge({id, active, ...props}) {
+function Cartridge({type, active, ...props}) {
     const consoleApi = useConsoleStore(s => s.consoleApi);
     const consoleReady = useConsoleStore(s => s.ready);
     const [state, setState] = useState(CartridgeState.FREE);
@@ -32,6 +35,23 @@ function Cartridge({id, active, ...props}) {
     const targetPosition = useRef(new THREE.Vector3());
     const targetRotation = useRef(new THREE.Quaternion());
     const lerpSpeed = 0.15;
+
+    const onLoad = (gltf) => {
+        gltf.scene.traverse(obj => {
+            const coverTexture = textureLoader.load(type.texture);
+            coverTexture.colorSpace = THREE.SRGBColorSpace
+            if (!obj.isMesh) return;
+            const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+            materials.forEach(mat => {
+                if (mat.name === "Labels.001") {
+                    mat.map = coverTexture;
+                    mat.needsUpdate = true;
+                    mat.map.flipY = false;
+                    console.log(mat);
+                }
+            })
+        })
+    }
 
     useEffect(() => {
         stateRef.current = state;
@@ -128,7 +148,7 @@ function Cartridge({id, active, ...props}) {
     };
 
     const getId = () => {
-        return id;
+        return type.id;
     }
 
     const eject = () => {
@@ -205,8 +225,9 @@ function Cartridge({id, active, ...props}) {
     return (
         <InteractiveGLTFModel
             url={models.cartridge.path}
-            id={"cartridge-" + id}
+            id={"cartridge-" + type.id}
             contentLength={models.cartridge.contentLength}
+            onLoad={onLoad}
             canGrab={canGrab}
             onGrabStart={handleGrabStart}
             onGrabMove={handleGrabMove}
@@ -220,7 +241,16 @@ function Cartridge({id, active, ...props}) {
 
 export default Cartridge;
 export const CartridgeType = { 
-    main: 0,
-    additional: 1,
-    admin: 2
+    main: {
+        id: 0,
+        texture: images.cartridgeTextures.main
+    },
+    additional: {
+        id: 1,
+        texture: images.cartridgeTextures.additional
+    },
+    admin: {
+        id: 2,
+        texture: images.cartridgeTextures.admin
+    }
 }

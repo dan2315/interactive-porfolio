@@ -12,7 +12,7 @@ export default function Navbar({routes, selectedPage}) {
 
     return (
         <nav className={styles.navContainer}>
-            <h2>Danil Prokhorenko</h2>
+            <h2>Danil Prokhorenko • {routes.name}</h2>
             <div className={styles.buttonsContainer}>
                 {Object.entries(routes.routes).map(([routeKey, route]) => {
                     return (

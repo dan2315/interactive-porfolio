@@ -72,7 +72,7 @@ function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props })
     return () => {
       cancelled = true;
     };
-  }, [id, url, registerAsset, updateAssetProgress, setAssetLoaded, setAssetError, onLoad, contentLength]);
+  }, [id, url, registerAsset, updateAssetProgress, setAssetLoaded, setAssetError, contentLength]);
 
 
   return model && !props.hide ? <>

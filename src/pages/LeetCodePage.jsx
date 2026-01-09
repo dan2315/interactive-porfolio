@@ -33,7 +33,6 @@ function LeetCodePage() {
     
     const langData = langs.data.problemsSolvedByLanguages;
 
-    console.log(pieDataSubmissions)
     const years = activity.data.activeYears;
     const maxStreak = activity.data.streak;
     const calendarJson = activity.data.submissionCalendar;

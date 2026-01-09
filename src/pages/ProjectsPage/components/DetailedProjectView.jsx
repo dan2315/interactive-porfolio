@@ -16,7 +16,6 @@ function DetailedProjectView({ project, back, toggleReaction }) {
                 </div>
                 <div className={styles.restOfTheContent}>
                     <Technologies value={project.technologies} />
-                    <ReactionsView project={project} toggleReaction={toggleReaction}/>
                     <Description value={project.description}/>
                     <RepositoryView  project={project}/>
                 </div>

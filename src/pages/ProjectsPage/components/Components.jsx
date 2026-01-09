@@ -1,7 +1,8 @@
 import styles from "../ProjectPage.module.css"
 import ReactMarkdown from "react-markdown";
-import EmojiPicker from "emoji-picker-react";
+import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { useState } from "react";
+import { emojiToUnified, emojiUrlByUnified } from "../../../utils/emoji";
 
 
 export function ItemContainer (props) {
@@ -9,17 +10,23 @@ export function ItemContainer (props) {
 }
 
 export function Title(props) {
-    return <h1 style={{marginTop: '0px'}}>{props.value}</h1>
+    return <h2 style={{margin: '5px'}}>{props.value}</h2>
 }
 
 export function PrideRating(props) {
-    return <p>🦁: {props.value}/10</p>
+    return <p>
+    <img 
+        style={{width: 16}}
+        src={emojiUrlByUnified(emojiToUnified("🏆"))} 
+        alt={"🏆"} 
+    />
+    : {props.value}/10</p>
 }
 
 export function Technologies(props) {
     return <div>
       {props.value.map(t => (
-        <span key={t}>{t} | </span>
+        <span className={styles.techItem} key={t}>{t} </span>
       ))}
     </div>
 }
@@ -83,7 +90,7 @@ export function ImagesRow({ n, ...props }) {
 export function RepositoryView({project}) {
     return (
     project.repository && (
-    <div style={{ }}>
+    <div>
         <h2 >Repository: {project.repository.name}</h2>
         <a href={project.repository.url} target="_blank" rel="noopener noreferrer">
             View on GitHub
@@ -166,9 +173,8 @@ export function RepositoryView({project}) {
 
 export function ReactionsView({project, toggleReaction}) {
     const [chosingReaction, setChosingReaction] = useState();
-    console.log(project.reactions)
     return (
-        <div style={{ marginTop: '20px', position: "relative"}}>
+        <div className={styles.reactionsContainer} style={{ marginTop: '20px', position: "relative"}}>
             <i>Reactions:</i>
             {project.reactions && Object.entries(project.reactions.emojis).map(([emoji, count]) => 
                 <span 
@@ -179,12 +185,16 @@ export function ReactionsView({project, toggleReaction}) {
                         ].filter(Boolean).join(" ")}
                     onClick={(e) => {toggleReaction(project.slug, emoji); e.stopPropagation();}}
                 >
-                    {emoji} {count}
+                    <img 
+                        className={styles.reactionContainerImage} 
+                        src={emojiUrlByUnified(emojiToUnified(emoji))} 
+                        alt={emoji} 
+                    /> {count}
                 </span>
             )}
             <span 
                 className={styles.reactionContainer} 
-                style={{ fontSize: 14 }}
+                style={{ fontSize: 14, alignSelf: "stretch" }}
                 onClick={(e) => {setChosingReaction(!chosingReaction); e.stopPropagation();}}
             >
                 <b>Add</b>
@@ -194,7 +204,7 @@ export function ReactionsView({project, toggleReaction}) {
                     toggleReaction(project.slug, emojiData.emoji);
                     setChosingReaction(false);
                 }}
-                style={{ position: "absolute", zIndex: 100 }}
+                style={{ position: "absolute", zIndex: 100, transform: "translateY(55%)" }}
                 lazyLoadEmojis
                 theme="dark"
             />}

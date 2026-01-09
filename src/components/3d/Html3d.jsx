@@ -66,8 +66,8 @@ function Html3d({ position, rotation, scale, children }) {
         scene.add(holder)
 
         return () => {
-            scene.remove(css3dObject)
-            css3dRenderer.domElement.remove()
+            scene.remove(css3dObject);
+            css3dRenderer.domElement.remove();
         }
     }, [])
 

@@ -27,10 +27,10 @@ import InteractiveGLTFModel from "./3d/InteractiveGLTFModel";
 function Scene() {
   const { cartridge, section } = useParams();
   const [currentView, setCurrentView] = useState("initial");
-  const htmlRef = useRef();
-
+  
   const activeCartridge = cartridge ?? null;
   const initSection = section ?? null;
+
 
   useEffect(() => {
     setCurrentView("initial");
@@ -67,22 +67,22 @@ function Scene() {
             <Physics gravity={[0, -9.81, 0]}>
               <GLTFModel id="greenHill" url={models.scene.path} contentLength={models.scene.contentLength}/>
               <GameConsole position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
-               <Cartridge id={CartridgeType.main}
+               <Cartridge type={CartridgeType.main}
                 active = {activeCartridge === "main"}
                 visualOffset = {[0, 0, 0.06]} 
                 initialPosition = {[-32.8, 5.07, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
                 />
-                <Cartridge id={CartridgeType.additional}
+                <Cartridge type={CartridgeType.additional}
                 active = {activeCartridge === "additional"}
                 visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.8, 4.87, 7.3]}
+                initialPosition = {[-32.8, 4.97, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
                 />
-                <Cartridge id={CartridgeType.admin}
+                <Cartridge type={CartridgeType.admin}
                 active = {activeCartridge === "admin"}
                 visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.8, 4.97, 7.3]}
+                initialPosition = {[-32.8, 4.87, 7.3]}
                 colliderSize = {[0.15, 0.025, 0.17]}
                 />
                <InteractiveGLTFModel
@@ -111,13 +111,12 @@ function Scene() {
               rotation={[0, (Math.PI / 180) * -30, 0]}
               scale={[0.0009, 0.0009, 0.0009]}
               >
-              <HtmlContent/>
+              <HtmlContent initSection={initSection}/>
             </Html3d>
             <PostFX/>
           </ModifiedSelection>
           </Suspense>
         </Canvas>
-        {htmlRef.current}
         <LoadingScreen />
       </AssetManagerProvider>
     </>

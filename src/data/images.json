@@ -1,0 +1,7 @@
+{
+    "cartridgeTextures" : {
+        "main" : "/textures/cartridges/cartridge-main.jpg",
+        "additional" : "/textures/cartridges/cartridge-additional.jpg",
+        "admin" : "/textures/cartridges/cartridge-admin.jpg"
+    }
+}

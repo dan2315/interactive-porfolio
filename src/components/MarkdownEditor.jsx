@@ -8,7 +8,6 @@ export function MarkdownEditor({ value, setValue, onSubmit, onCancel }) {
         value={value}
         onChange={(e) => setValue(e.target.value)}
         style={{ width: "50%", height: 200 }}
-        onBlur={onSubmit}
         onKeyDown={(e) => {
           if (e.key === "Enter" && e.ctrlKey) e.currentTarget.blur();
           if (e.key === "Escape") {

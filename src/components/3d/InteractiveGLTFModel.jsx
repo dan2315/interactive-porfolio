@@ -114,7 +114,7 @@ function InteractiveGLTFModel({
 
   const reset = useCallback(() => {
     const rb = rigidBody.current;
-    if (!rb) return;
+    if (!rb || rb.isKinematic()) return;
 
     const position = new THREE.Vector3(
         initialPosition[0],

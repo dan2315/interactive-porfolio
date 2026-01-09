@@ -12,7 +12,10 @@ export const useConsoleStore = create((set) => ({
     });
   },
 
-  setCartridgeId: (id) => set({ cartridgeId: id }),
+  setCartridgeId: (id) =>{
+    console.log(id);
+    set({ cartridgeId: id });
+  },
   
   clearConsole() {
     set({
