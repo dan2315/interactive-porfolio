@@ -18,10 +18,7 @@ function ProjectsPage() {
     const [sortOrder, setSortOrder] = useState('desc');
     const [searchQuery, setSearchQuery] = useState('');
     const queryClient = useQueryClient();
-    const route = useRouteStore(s => s.route);
     const navigate = useRouteStore(s => s.setRoute);
-    const sortDropdown = useRef();
-
 
     async function toggleReaction(slug, emoji) {
         const updatedReactions = await projectsService.public.toggleReaction(slug, emoji);
@@ -33,6 +30,11 @@ function ProjectsPage() {
                     : p
             )
         );
+    }
+
+    function selectProject(project) {
+        navigate(`/main/projects/${project.slug}`);
+        setSelectedProject(project);
     }
     
     if (isLoading) return <PageLoading/>;
@@ -139,10 +141,10 @@ function ProjectsPage() {
         <div className={styles.container}>
             <div className={styles.innerContainer}>
             {filteredProjects.map(project => 
-            <ItemContainer key={project.slug} onClick={() => navigate(`/main/projects/${project.slug}`)}>
+            <ItemContainer key={project.slug} onClick={() => selectProject(project)}>
                 <Title value={project.title}/>
                 <Technologies value={project.technologies} />
-                <PrideRating value={project.prideRating}/>
+                {/* <PrideRating value={project.prideRating}/> */}
                 <ShortDescription value={project.shortDescription}/>
                 <ImagesRow value={project.description}/>
                 <ReactionsView project={project} toggleReaction={toggleReaction}/>
@@ -150,7 +152,7 @@ function ProjectsPage() {
             )}
             </div>
         </div>
-        <DetailedProjectView project={selectedProject} back={() => {setSelectedProject(null); navigate("/main/projects")}} toggleReaction={toggleReaction}/>
+        <DetailedProjectView project={selectedProject} back={() => {setSelectedProject(null); navigate("/main/projects")}}/>
         </>
     )
 }

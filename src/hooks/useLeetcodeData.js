@@ -3,7 +3,7 @@ import leetcode from "../services/leetcodeActivity";
 
 const STALE_30_MIN = 1000 * 60 * 30;
 
-const leetcodeQueries = {
+const staticQueries = {
   stats: {
     queryKey: ["leetcode-stats"],
     queryFn: leetcode.getUserStat,
@@ -18,26 +18,34 @@ const leetcodeQueries = {
     queryKey: ["leetcode-submissions"],
     queryFn: leetcode.getRecentSubmissions,
     staleTime: STALE_30_MIN,
-  },
-  activity: {
-    queryKey: ["leetcode-activity"],
-    queryFn: leetcode.getActivityCalendar,
-    staleTime: STALE_30_MIN,
-  },
+  }
 };
 
+const activityQuery = (year) => ({
+  queryKey: ["leetcode-activity", year],
+  queryFn: () => leetcode.getActivityCalendar(year),
+  staleTime: STALE_30_MIN,
+});
+
 async function prefetchLeetCode(queryClient) {
-  await Promise.all(
-    Object.values(leetcodeQueries).map((query) =>
-      queryClient.prefetchQuery(query)
-    )
-  );
+  await Promise.all([
+    queryClient.prefetchQuery(staticQueries.stats),
+    queryClient.prefetchQuery(staticQueries.langs),
+    queryClient.prefetchQuery(staticQueries.submissions),
+    queryClient.prefetchQuery(activityQuery(2025)),
+  ]);
 }
 
-function useLeetCodeData() {
-  const results = useQueries({
-    queries: Object.values(leetcodeQueries),
+function useLeetCodeData(year) {
+    const results = useQueries({
+    queries: [
+      staticQueries.stats,
+      staticQueries.langs,
+      staticQueries.submissions,
+      activityQuery(year),
+    ],
   });
+  console.log("ASDASD", year)
 
   return {
     stats: results[0],
@@ -48,4 +56,4 @@ function useLeetCodeData() {
 }
 
 export default useLeetCodeData;
-export { prefetchLeetCode, leetcodeQueries };
+export { prefetchLeetCode };

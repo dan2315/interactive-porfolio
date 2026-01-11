@@ -1,0 +1,63 @@
+{
+  "experiences": [
+    {
+      "title": "Backend / Full-stack Engineer",
+      "company": "Galaxy Sciences",
+      "employmentType": "Part-time",
+      "startDate": "Apr 2025",
+      "endDate": "Oct 2025",
+      "duration": "7 months",
+      "location": "Remote",
+      "technologies": [
+        "REST APIs",
+        "Supabase",
+        "PostgreSQL"
+      ],
+      "highlights": [
+        "Designed backend architecture for a narrative-driven web application",
+        "Defined REST API contracts for content management and real-time features",
+        "Designed data models and Supabase setup including PostgreSQL, authentication, and storage",
+        "Collaborated with designers to define backend requirements and internal tools"
+      ]
+    },
+    {
+      "title": "Backend & Infrastructure Engineer",
+      "company": "Unreal Frontiers Project",
+      "employmentType": "Self-employed",
+      "startDate": "Jun 2024",
+      "endDate": "Jul 2025",
+      "duration": "1 year 2 months",
+      "location": "Remote",
+      "technologies": [
+        ".NET",
+        "Node.js",
+        "Express"
+      ],
+      "highlights": [
+        "Designed and implemented backend services and client infrastructure using .NET and Node.js",
+        "Built authentication flows, session-based logic, and versioning systems",
+        "Integrated backend services with multiple clients including a desktop launcher and game servers"
+      ]
+    }
+    ,
+    {
+      "title": "Software Engineer",
+      "company": "Singularity Lab",
+      "employmentType": "Full-time",
+      "startDate": "Sep 2021",
+      "endDate": "Nov 2022",
+      "duration": "1 year 3 months",
+      "location": "Almaty, Kazakhstan",
+      "technologies": [
+        "Unity",
+        "C#",
+        "Photon Fusion"
+      ],
+      "highlights": [
+        "Developed mobile games in Unity with real-time networking using Photon Fusion",
+        "Implemented backend integrations for game features, monetization, and analytics",
+        "Optimized game systems and asset management to improve runtime performance and reduce memory usage"
+      ]
+    }
+  ]
+}

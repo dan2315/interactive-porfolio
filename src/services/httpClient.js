@@ -94,6 +94,7 @@ function adminFetch(path) {
 
 function genericGet(path, params = {}) {
   const query = new URLSearchParams(params).toString();
+  console.log(params, query);
   const url = query ? `${path}?${query}` : path;
 
   return apiFetch(url, {

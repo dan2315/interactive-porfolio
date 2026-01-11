@@ -3,8 +3,10 @@ import GLTFModel from "./GLTFModel";
 import * as THREE from "three";
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
 import models from "../../data/models.json"
+import { useSceneStore } from "../../stores/SceneStore";
 
 function BoxColliders() {
+    const setCollisionReady = useSceneStore(s => s.setCollisionReady);
     const [colliders, setColliders] = useState([]);
     const loaded = useRef(false);
 
@@ -38,6 +40,7 @@ function BoxColliders() {
         })
 
         setColliders(found);
+        setCollisionReady();
     }
 
     return(

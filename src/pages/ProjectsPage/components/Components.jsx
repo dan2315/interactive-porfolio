@@ -1,7 +1,8 @@
+/* eslint-disable jsx-a11y/alt-text */
 import styles from "../ProjectPage.module.css"
 import ReactMarkdown from "react-markdown";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { emojiToUnified, emojiUrlByUnified } from "../../../utils/emoji";
 
 
@@ -41,16 +42,36 @@ export function Description(props) {
         <ReactMarkdown
             components={{
                 img: ({...props}) => {
-                    // alt prop passed!
-                    // eslint-disable-next-line jsx-a11y/alt-text
-                    return <img 
-                        className={styles.imageMarkdown}
-                        {...props}
-                    />
+                    return <MarkdownImage {...props}/>
                 }
             }}
         >{props.value}</ReactMarkdown>
     </div>
+}
+
+function MarkdownImage(props) {
+    const [opened, setOpened] = useState(false);
+
+    useEffect(() => {
+        console.log("ASDASDASD!!!!!!!!!!!!!", opened)
+    }, [opened])
+
+    return <>
+        <img 
+            onClick={() => {
+                setOpened(true)
+            }
+        }
+            className={styles.imageMarkdown}
+            {...props}
+        />
+        {opened &&
+         <img
+            onClick={() => setOpened(false)}
+            className={styles.fullScreenImage}
+            {...props}
+        />}
+    </>
 }
 
 function parseForSrcs(text) {
@@ -204,7 +225,7 @@ export function ReactionsView({project, toggleReaction}) {
                     toggleReaction(project.slug, emojiData.emoji);
                     setChosingReaction(false);
                 }}
-                style={{ position: "absolute", zIndex: 100, transform: "translateY(55%)" }}
+                style={{ position: "absolute", zIndex: 10, transform: "translateY(55%)" }}
                 lazyLoadEmojis
                 theme="dark"
             />}

@@ -1,7 +1,7 @@
 import { Description, ReactionsView, RepositoryView, Technologies, Title } from "./Components";
 import styles from "./DetailedProjectView.module.css"
 
-function DetailedProjectView({ project, back, toggleReaction }) {
+function DetailedProjectView({ project, back }) {
     if (!project) return;
 
     return (

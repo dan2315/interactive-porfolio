@@ -39,7 +39,7 @@ function Scene() {
   return (
     <>
       <AssetManagerProvider>
-        <Canvas style={{ height: "100vh" }}
+        <Canvas style={{ height: "100vh"}}
           shadows
           gl={{ 
             stencil: true,

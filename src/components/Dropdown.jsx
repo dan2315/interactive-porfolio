@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Dropdown({label, options}) {
+export default function Dropdown({label, options, onSelected}) {
     const [value, setValue] = useState("");
 
     return (
@@ -9,7 +9,10 @@ export default function Dropdown({label, options}) {
         <select
             style={{margin: "10px"}}
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => {
+                onSelected(e);
+                setValue(e.target.value)
+            }}
         >
             {options.reverse().map((o, i) => 
                 <option key={i} value={o}>{o}</option>

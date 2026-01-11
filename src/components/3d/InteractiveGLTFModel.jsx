@@ -30,6 +30,7 @@ function InteractiveGLTFModel({
   const dragging = useRef(false);
   const resetTrigger = useSceneStore(s => s.resetTrigger);
   const {rapier} = useRapier();
+  const collisionReady = useSceneStore(s => s.collisionReady);
  
   const plane = useRef(new THREE.Plane());
   const raycaster = useRef(new THREE.Raycaster());
@@ -67,7 +68,7 @@ function InteractiveGLTFModel({
 
   const onPointerDown = (e) => {
     if (!canGrab) return;
-    if (!claim("objinteraction")) return
+    if (!claim("objinteraction")) return;
     
     dragging.current = true;
     updateMouse(mouse, e);
@@ -82,6 +83,13 @@ function InteractiveGLTFModel({
     onGrabStart?.();
     e.stopPropagation();
   };
+
+  useEffect(() => {
+    if (!rigidBody.current) return;
+    if (collisionReady) {
+      rigidBody.current.setBodyType(rapier.RigidBodyType.Dynamic);
+    }
+  }, [collisionReady])
 
   useEffect(() => {
     const handlePointerMove = (e) => {
@@ -175,7 +183,7 @@ function InteractiveGLTFModel({
         if (rigidRef) rigidRef.current = rb;
       }}
       position={initialPosition}
-      type="dynamic"
+      type="kinematicPosition"
     >
       {collider()}
       <ModifiedSelect enabled={hovered && !dragging.current && canGrab}>

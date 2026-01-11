@@ -1,10 +1,10 @@
 import styles from "./ExperiencePage.module.css"
-import data from "../data/experiences.json"
+import data from "../data/experience/backendperspective.json"
 
 export default function ExperiencePage() {
     return (
         <div className={styles.pageContainer}>
-            <h1>Experiences</h1>
+            <h1>Experience</h1>
             {data.experiences.map((exp, i) => 
             <div>
                 <h2 className={styles.header} style={{marginTop: i === 0 ? "10px" : "60px"}}>

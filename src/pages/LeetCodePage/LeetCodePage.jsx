@@ -1,23 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./LeetCodePage.module.css"
 import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import useLeetCodeData from "../hooks/useLeetcodeData";
-import { timeAgo } from "../utils/time";
-import Dropdown from "../components/Dropdown";
-import PageLoading from "./PageLoading";
+import useLeetCodeData from "../../hooks/useLeetcodeData";
+import { timeAgo } from "../../utils/time";
+import Dropdown from "../../components/Dropdown";
+import PageLoading from "../PageLoading";
+import leetcode from "../../services/leetcodeActivity";
+import ActivityChart from "./ActivityChart";
 
 function LeetCodePage() {
-    const { stats, langs, submissions, activity } = useLeetCodeData();
-    const [selectedYeat, setSelectedYear] = useState(2025);
-    const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const [selectedYear, setSelectedYear] = useState(2025);
+    const { stats, langs, submissions, activity } = useLeetCodeData(selectedYear);
     const difficultyColors = {Easy: "#A8E6CF", Medium: "#FFD3B6", Hard: "#FF8B94"};
     const languageColors = {"C#": "#8DD3C7","C++": "#BEBADA","Python3": "#FDB462","Java": "#FFB6B9",};
 
     const isLoading =
     !stats || stats.isLoading ||
     !langs?.data ||
-    !submissions?.data ||
-    !activity?.data;
+    !submissions?.data;
 
     if (isLoading) {
         return <PageLoading/>
@@ -32,21 +32,6 @@ function LeetCodePage() {
     }));
     
     const langData = langs.data.problemsSolvedByLanguages;
-
-    const years = activity.data.activeYears;
-    const maxStreak = activity.data.streak;
-    const calendarJson = activity.data.submissionCalendar;
-    const calendar = JSON.parse(calendarJson); 
-
-    const submissionsByMonth = Array.from({ length: 12 }, (_, i) => ({
-        month: monthNames[i],
-        submissions: 0
-    }));
-    for (const [timestamp, count] of Object.entries(calendar)) {
-        const date = new Date(timestamp * 1000);
-        const month = date.getMonth();
-        submissionsByMonth[month].submissions += count;
-    }
 
 
     return(
@@ -105,17 +90,7 @@ function LeetCodePage() {
                 </PieChart>
                 <p style={{textAlign: "center"}}>Total Solved: {submissionNums[0].count}</p>
                 </div>
-                <div style={{width: "100%"}}>
-                    <ResponsiveContainer width="80%" height={300}>
-                        <BarChart data={submissionsByMonth}>
-                            <XAxis dataKey="month" />
-                            <YAxis />
-                            <Tooltip />
-                            <Bar dataKey="submissions" fill="#8e6f48"/>
-                        </BarChart>
-                    </ResponsiveContainer>
-                    <Dropdown label="Selected year: " options={years}/>
-                </div>
+            <ActivityChart setSelectedYear={setSelectedYear} activityData={activity.data}/>
             </div>
             <div>
                 <h2>Recent Submissions</h2>

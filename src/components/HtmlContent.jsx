@@ -1,5 +1,5 @@
 import ExperiencePage from "../pages/ExperiencePage";
-import LeetCodePage from "../pages/LeetCodePage";
+import LeetCodePage from "../pages/LeetCodePage/LeetCodePage";
 import ProjectsPage from "../pages/ProjectsPage/ProjectsPage";
 import { useConsoleStore } from "../stores/GameConsoleStore";
 import IdleScreen from "./IdleScreen";
@@ -9,6 +9,7 @@ import Navbar from "./Navbar";
 import { useRouteStore } from "../stores/RouteStore";
 import EditProjectsPage from "../pages/EditProjectsPage";
 import AdminCurtain from "./AdminCurtain";
+import GitHubPage from "../pages/GitHubPage";
 
 const routes = {
   0: {
@@ -39,7 +40,7 @@ const routes = {
       },
       github: {
         name: "GitHub",
-        element: <LeetCodePage />,
+        element: <GitHubPage />,
       },
     },
   },
@@ -47,10 +48,6 @@ const routes = {
     base: "admin",
     name: "Admin Panel",
     routes: {
-      experiences: {
-        name: "Edit Experiences",
-        element: <></>
-      },
       projects: {
         name: "Edit Projects",
         element: <EditProjectsPage/>
@@ -72,14 +69,11 @@ function HtmlContent({ initSection }) {
   const isAdminPage = cartridgeId === 2; 
 
   useEffect(() => {
-    console.log("che", prevCartridgeId.current);
     if (!cartridgeRoutes) {}
     else if (isInit && !!cartridgeRoutes.routes[initSection]) {
-      console.log("init", cartridgeId);
       navigate(`/${cartridgeRoutes.base}/${initSection}`);
     } 
     else if (prevCartridgeId.current !== cartridgeId) {
-      console.log("default", cartridgeId);
       const defaultSection = cartridgeRoutes && Object.keys(cartridgeRoutes.routes)[0];
       navigate(`/${cartridgeRoutes.base}/${defaultSection}`);
     }

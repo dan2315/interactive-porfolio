@@ -73,6 +73,7 @@ function ControlledCamera({ view, debug }) {
 
     const onMouseUp = () => {
       isDown = false
+      if (targetProgress.current < 0.5) targetRotation.current = {x: 0, y: 0}
       release("camera")
     }
 
