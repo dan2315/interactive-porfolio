@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import * as THREE from 'three'
 import { BezierHelper, ControlPointHelper } from "../dev/3d/DebugHelpers";
 import { useInputStore } from "../../stores/InputStores";
+import { assistant } from "../../stores/AssistantStore";
 
 const CAMERA_VIEWS = {
   initial:  new THREE.CubicBezierCurve3(
@@ -34,6 +35,8 @@ function ControlledCamera({ view, debug }) {
 
   const rotation = useRef({ x: 0, y: 0 });
   const targetRotation = useRef({ x: 0, y: 0 });
+  
+  const hasReachedEnd = useRef(false);
 
   const curve = CAMERA_VIEWS[view];
   const debugElement = <>
@@ -119,7 +122,6 @@ function ControlledCamera({ view, debug }) {
       e.preventDefault();
     };
 
-
     const onWheel = (e) => {
       if (!e.altKey) {
         handleOnWheel(e);
@@ -199,6 +201,14 @@ function ControlledCamera({ view, debug }) {
     camera.lookAt(
       pos.clone().add(forward)
     )
+
+    if (!hasReachedEnd.current && 1 - progress.current < 0.01) {
+      hasReachedEnd.current = true;
+      assistant.say({
+        text: "Ohh... Looks like you tried to scroll the page. Use Alt + Scroll to scroll instead of zooming.",
+        timeToDisappear: 10000
+      })
+    }
   })
 
   return <>

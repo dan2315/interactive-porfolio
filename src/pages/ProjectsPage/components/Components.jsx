@@ -52,10 +52,6 @@ export function Description(props) {
 function MarkdownImage(props) {
     const [opened, setOpened] = useState(false);
 
-    useEffect(() => {
-        console.log("ASDASDASD!!!!!!!!!!!!!", opened)
-    }, [opened])
-
     return <>
         <img 
             onClick={() => {

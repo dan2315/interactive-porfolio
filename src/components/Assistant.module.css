@@ -1,0 +1,85 @@
+.assistantUi {
+  position: absolute;
+  bottom: 120px;
+  right: 160px;
+
+  z-index: 20;
+
+  filter:
+    drop-shadow(6px 6px 20px rgba(0,0,0,0.75));
+
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  opacity: 0;
+  transform: translateY(20px);
+  pointer-events: none;
+}
+
+.assistantUi.visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.assistantUi:hover {
+  opacity: 0.5;
+}
+
+.assistantImage {
+  width: 300px;
+}
+
+.assistantBubble {
+  position: relative;
+  max-width: 260px;
+  min-height: 130px;
+  padding: 12px 14px;
+
+  background: #fff4dd;
+  color: #2b2b2b;
+
+  border: 2px solid #d6c19a;
+  border-radius: 10px;
+
+  font-size: 14px;
+  line-height: 1.4;
+
+  box-shadow: 
+    0 2px 0 rgba(0,0,0,0.15),
+    0 6px 12px rgba(0,0,0,0.15);
+
+
+  font-family: "Montserrat", sans-serif;
+  font-weight: 600;
+  font-size: 16px;
+  text-justify: distribute;
+}
+
+.assistantBubble::after {
+  content: "";
+  position: absolute;
+
+  bottom: -18px;
+  right: 64px;
+
+  width: 0;
+  height: 0;
+
+  border-left: 22px solid transparent;
+  border-right: 22px solid transparent;
+  border-top: 18px solid #fff4dd;
+}
+
+.assistantBubble::before {
+  content: "";
+  position: absolute;
+
+  bottom: -20px;
+  right: 64px;
+
+  width: 0;
+  height: 0;
+
+  border-left: 24px solid transparent;
+  border-right: 24px solid transparent;
+  border-top: 20px solid #d6c19a;
+}

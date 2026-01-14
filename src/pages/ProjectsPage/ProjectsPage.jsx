@@ -19,6 +19,14 @@ function ProjectsPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const queryClient = useQueryClient();
     const navigate = useRouteStore(s => s.setRoute);
+    const route = useRouteStore(s => s.route);
+
+    useEffect(() => {
+        if (!projects) return;
+        const slug = route?.split('/')[3];
+        const project = projects.find(p => p.slug === slug);
+        setSelectedProject(project);
+    }, [projects, route])
 
     async function toggleReaction(slug, emoji) {
         const updatedReactions = await projectsService.public.toggleReaction(slug, emoji);
@@ -34,7 +42,6 @@ function ProjectsPage() {
 
     function selectProject(project) {
         navigate(`/main/projects/${project.slug}`);
-        setSelectedProject(project);
     }
     
     if (isLoading) return <PageLoading/>;

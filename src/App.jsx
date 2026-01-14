@@ -2,9 +2,14 @@ import "./App.css";
 import { Route, BrowserRouter, Routes  } from "react-router-dom";
 import Scene from "./components/Scene";
 import RouteManager from "./components/RouteManager";
+import { useTouchOnlyDevice } from "./hooks/useIsTouchOnlyDevice";
+import DeviceNotSupportedPage from "./pages/DeviceNotSupportedPage";
 
 function App() {
+    const notAllowed = useTouchOnlyDevice();
     
+    if (notAllowed) return <DeviceNotSupportedPage/>;
+
     return(
     <BrowserRouter>
         <RouteManager/>

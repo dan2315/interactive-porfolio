@@ -56,7 +56,7 @@ const routes = {
   },
 };
 
-function HtmlContent({ initSection }) {
+function HtmlContent({ initSection, restOfTheRoute }) {
   const prevCartridgeId = useRef(null);
   const isInit = prevCartridgeId.current === null;
   const route = useRouteStore((s) => s.route);
@@ -71,11 +71,13 @@ function HtmlContent({ initSection }) {
   useEffect(() => {
     if (!cartridgeRoutes) {}
     else if (isInit && !!cartridgeRoutes.routes[initSection]) {
-      navigate(`/${cartridgeRoutes.base}/${initSection}`);
+      navigate(`/${cartridgeRoutes.base}/${initSection}/${restOfTheRoute}`);
+      console.log("init", initSection);
     } 
     else if (prevCartridgeId.current !== cartridgeId) {
       const defaultSection = cartridgeRoutes && Object.keys(cartridgeRoutes.routes)[0];
       navigate(`/${cartridgeRoutes.base}/${defaultSection}`);
+      console.log("default", defaultSection);
     }
     prevCartridgeId.current = cartridgeId;
   }, [cartridgeId, cartridgeRoutes, initSection, isInit, navigate]);

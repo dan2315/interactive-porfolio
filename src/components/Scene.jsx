@@ -22,11 +22,12 @@ import WaterSurface from "./3d/Water";
 import ResetButton from "./3d/ResetButton";
 import { ModifiedSelect, ModifiedSelection } from "./3d/SelectionAPI";
 import InteractiveGLTFModel from "./3d/InteractiveGLTFModel";
+import Assistant from "./Assistant";
 
 
 function Scene() {
-  const { cartridge, section } = useParams();
   const [currentView, setCurrentView] = useState("initial");
+const { cartridge, section, "*": rest } = useParams();
   
   const activeCartridge = cartridge ?? null;
   const initSection = section ?? null;
@@ -111,13 +112,14 @@ function Scene() {
               rotation={[0, (Math.PI / 180) * -30, 0]}
               scale={[0.0009, 0.0009, 0.0009]}
               >
-              <HtmlContent initSection={initSection}/>
+              <HtmlContent initSection={initSection} restOfTheRoute={rest}/>
             </Html3d>
             <PostFX/>
           </ModifiedSelection>
           </Suspense>
         </Canvas>
         <LoadingScreen />
+        <Assistant text={"Need help? Lorum ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text "} />
       </AssetManagerProvider>
     </>
   );
