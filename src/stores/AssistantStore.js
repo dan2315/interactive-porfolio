@@ -3,11 +3,33 @@ let listeners = [];
 let state = {
   visible: false,
   text: "",
-  timeoutId: null,
 };
+
+let queue = [];
+let timeoutId = null;
 
 function notify() {
   listeners.forEach((l) => l(state));
+}
+
+function internalShowNext() {
+  if (queue.length === 0) {
+    state = { visible: false, text: "" };
+    notify();
+    return;
+  }
+
+  const { text, timeToDisappear } = queue.shift();
+
+  state = { visible: true, text };
+  notify();
+
+  timeoutId = setTimeout(() => {
+    state = { visible: false, text };
+    notify();
+    timeoutId = null;
+    internalShowNext();
+  }, timeToDisappear);
 }
 
 export const assistant = {
@@ -20,33 +42,32 @@ export const assistant = {
   },
 
   say({ text, timeToDisappear = 3000 }) {
-    if (state.timeoutId) {
-      clearTimeout(state.timeoutId);
+    queue.push({ text, timeToDisappear });
+
+    if (!state.visible && !timeoutId) {
+      internalShowNext();
     }
-
-    state = {
-      visible: true,
-      text,
-      timeoutId: setTimeout(() => {
-        state = { ...state, visible: false };
-        notify();
-      }, timeToDisappear),
-    };
-
-    notify();
   },
 
   hide() {
-    if (state.timeoutId) {
-      clearTimeout(state.timeoutId);
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
     }
-
-    state = {
-      visible: false,
-      text: "",
-      timeoutId: null,
-    };
-
+    queue = [];
+    state = { visible: false, text: "" };
     notify();
   },
+
+  showNext() {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+      timeoutId = null;
+    }
+    internalShowNext();
+  },
+
+  getQueue() {
+    return queue.slice();
+  }
 };

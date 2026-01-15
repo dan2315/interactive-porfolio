@@ -3,6 +3,7 @@ import styles from "../ProjectPage.module.css"
 import ReactMarkdown from "react-markdown";
 import EmojiPicker, { EmojiStyle } from "emoji-picker-react";
 import { useEffect, useState } from "react";
+import { Fa500Px, FaAccusoft, FaAdjust, FaPlusCircle, FaSearchPlus } from 'react-icons/fa';
 import { emojiToUnified, emojiUrlByUnified } from "../../../utils/emoji";
 
 
@@ -50,23 +51,30 @@ export function Description(props) {
 }
 
 function MarkdownImage(props) {
+    const [hovered, setHovered] = useState(false);
     const [opened, setOpened] = useState(false);
 
     return <>
-        <img 
-            onClick={() => {
-                setOpened(true)
-            }
-        }
-            className={styles.imageMarkdown}
-            {...props}
-        />
+        <div className={styles.imageContainer}>
+            <img 
+                onPointerOver={() => setHovered(true)}
+                onPointerOut={() => setHovered(false)}
+                onClick={() => setOpened(true)}
+                className={styles.imageMarkdown}
+                {...props}
+            />
+            {hovered && <div className={styles.imageHoverOverlay}>
+                <FaSearchPlus color="#deb887" size={"64px"}/>
+            </div>}
+        </div>
         {opened &&
-         <img
-            onClick={() => setOpened(false)}
-            className={styles.fullScreenImage}
-            {...props}
-        />}
+        <div className={styles.dimArea} onClick={() => setOpened(false)}>
+            <img
+                className={styles.fullScreenImage}
+                {...props}
+            />
+        </div>
+        }
     </>
 }
 

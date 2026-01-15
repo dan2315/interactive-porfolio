@@ -49,9 +49,6 @@ const { cartridge, section, "*": rest } = useParams();
             outputColorSpace: THREE.SRGBColorSpace 
           }}
           camera={{ fov: 75, near: 0.1, far: 1000 }}
-          onCreated={({ gl }) => {
-            gl.physicallyCorrectLights = true;
-          }}
         >
           <Suspense fallback={null}>
             <ModifiedSelection>

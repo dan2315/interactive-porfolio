@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import { BezierHelper, ControlPointHelper } from "../dev/3d/DebugHelpers";
 import { useInputStore } from "../../stores/InputStores";
 import { assistant } from "../../stores/AssistantStore";
+import { scrollNearestAncestor } from "../../utils/customScroll";
 
 const CAMERA_VIEWS = {
   initial:  new THREE.CubicBezierCurve3(
@@ -125,10 +126,10 @@ function ControlledCamera({ view, debug }) {
     const onWheel = (e) => {
       if (!e.altKey) {
         handleOnWheel(e);
-        e.preventDefault();
       } else {
-        e.stopImmediatePropagation();
+        scrollNearestAncestor(e);
       }
+      e.preventDefault();
     };
     window.addEventListener('wheel', onWheel, { passive: false });
     window.addEventListener("pointerdown", onMouseDown)
@@ -165,18 +166,18 @@ function ControlledCamera({ view, debug }) {
     progress.current = THREE.MathUtils.lerp(
       progress.current,
       progress.current + distance,
-      0.08
+      6 * delta
     );
 
     rotation.current.x = THREE.MathUtils.lerp(
       rotation.current.x,
       targetRotation.current.x,
-      0.08
+      4 * delta
     );
     rotation.current.y = THREE.MathUtils.lerp(
       rotation.current.y,
       targetRotation.current.y,
-      0.08
+      4 * delta
     );
 
     const pos = curve.getPointAt(progress.current);
@@ -205,7 +206,11 @@ function ControlledCamera({ view, debug }) {
     if (!hasReachedEnd.current && 1 - progress.current < 0.01) {
       hasReachedEnd.current = true;
       assistant.say({
-        text: "Ohh... Looks like you tried to scroll the page. Use Alt + Scroll to scroll instead of zooming.",
+        text: "Ohh... Looks like you tried to scroll the page. Use Alt + Wheel to scroll instead of zooming. Additionally you can press Shift to scroll faster.",
+        timeToDisappear: 10000
+      })
+      assistant.say({
+        text: "Did you know? You can swap the cartridge in the console to explore more content. Just drag a new one in!",
         timeToDisappear: 10000
       })
     }

@@ -21,11 +21,11 @@ function Html3d({ position, rotation, scale, children }) {
         const css3dRenderer = new CSS3DRenderer();
         css3dRenderer.domElement.style.position = 'absolute';
         css3dRenderer.domElement.style.top = '0px';
-        css3dRenderer.domElement.style.zIndex = '10';
+        css3dRenderer.domElement.style.zIndex = '0';
         css3dRenderer.domElement.style.transformOrigin = 'top left';
         css3dRenderer.domElement.id = "CSS3D";
 
-        glRenderer.domElement.style.position = 'absolute';;
+        glRenderer.domElement.style.position = 'absolute';
         glRenderer.domElement.style.zIndex = '1';
         glRenderer.domElement.style.pointerEvents = 'none';
 

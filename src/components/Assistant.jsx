@@ -8,7 +8,7 @@ function Assistant( { speed = 30 } ) {
     const typed = useTypewriter(text);
     
     return (
-        <div onClick={assistant.hide} className={`${styles.assistantUi} ${visible ? styles.visible : ''}`}>
+        <div onClick={assistant.showNext} className={`${styles.assistantUi} ${visible ? styles.visible : ''}`}>
             <div className={styles.assistantBubble}>
                 {typed}
             </div>

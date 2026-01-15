@@ -1,9 +1,10 @@
+import styles from './LoadingScreen.module.css';
 import { useAssetManagerContext } from '../contexts/AssetManagerContext';
 import { randomInt } from '../utils/random';
-import styles from './LoadingScreen.module.css';
 import React, { useEffect, useMemo, useState } from "react";
 import sprites from '../data/sprites.json';
 import { useSceneStore } from '../stores/SceneStore';
+import LoadedModal from './LoadedModal';
 
 const fruitIds = [2, 3, 4, 5, 6];
 const ghostIds = [7, 8, 9, 10];
@@ -19,6 +20,7 @@ function LoadingScreen() {
     
     const loadingText = "Bringing code to life...";
     const [loadingTextTick, setLoadingTextTick] = useState(0);
+    const [canContinue, setCanContinue] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const [displayProgress, setDisplayProgress] = useState(0);
     const [tileProgress, setTileProgress] = useState(0);
@@ -58,7 +60,6 @@ function LoadingScreen() {
         let rndFruits = randomInt(fruits.min, fruits.max);
         const totalSpecialObjects = rndGhosts + rndFruits;
         const range = Math.floor((tiles - 2) / totalSpecialObjects);
-
 
         let firstGhost = totalSpecialObjects;
         for (let i = 0; i < totalSpecialObjects; i++) {
@@ -109,7 +110,7 @@ function LoadingScreen() {
 
     useEffect(() => {
         if (isComplete && displayProgress >= 100) {
-            setIsVisible(false);
+            setCanContinue(true);
         }
     }, [displayProgress, isComplete]);
 
@@ -139,7 +140,6 @@ function LoadingScreen() {
             return next;
         })
     }, [tileProgress])
-
 
 
     const Tile = React.memo(({ obj }) => {
@@ -187,44 +187,53 @@ function LoadingScreen() {
         ));
     }, [barObjectsState]);
 
-    return (
-        <div className={`${styles.loadingScreen} ${!isVisible ? styles.fadeOut : ""}`}>
-            <div className={styles.flexContainer} >
-                <div style={{display: "flex", width:`${barWidth}px`, alignItems: "flex-end", justifyContent: 'space-between',}}> 
-                    <div style={{ minWidth: 0, flexShrink: 1 }}>
-                        <h1 className={styles.writings}>
-                            Danil Prokhorenko
-                        </h1>
-                        <h2 className={styles.writings}>
-                            Software Engineer
-                        </h2>
-                        <h2 className={styles.writings}  style={{fontFamily: `"Fira Code", monospace`,fontWeight: 500}} >
-                            <i>{loadingText.slice(0, loadingTextTick) + "▮" + loadingText.slice(loadingTextTick + 1)}</i>
-                        </h2>
-                    </div>
-                    <div style={{height: "fit-content"}}>
-                        <h1 className={styles.writings}>{`${Math.round(displayProgress)}%`}</h1>
-                    </div>
+    const loadingScreen = <>
+        <div className={styles.flexContainer} >
+            <div style={{display: "flex", width:`${barWidth}px`, alignItems: "flex-end", justifyContent: 'space-between',}}> 
+                <div style={{ minWidth: 0, flexShrink: 1 }}>
+                    <h1 className={styles.writings}>
+                        Danil Prokhorenko
+                    </h1>
+                    <h2 className={styles.writings}>
+                        Software Engineer
+                    </h2>
+                    <h2 className={styles.writings}  style={{fontFamily: `"Fira Code", monospace`,fontWeight: 500}} >
+                        <i>{loadingText.slice(0, loadingTextTick) + "▮" + loadingText.slice(loadingTextTick + 1)}</i>
+                    </h2>
                 </div>
-                <div>
-                    <div className={styles.loadingBar} style={{
-                        width: `${barWidth}px`,
-                        height: `${tileWidth}px`
-                    }}>
-                        <div className={styles.pacman} style={{
-                            width: `${tileWidth}px`,
-                            height: `${tileWidth}px`,
-                            backgroundSize: `${894 * scale}px ${960 * scale}px`,
-                            backgroundPositionX: `-${pacmanFrames[currentFrame] * frameWidth * scale}px`,
-                            left: `${barWidth * displayProgress/100}px`
-                        }}/>
-                        <div className={styles.objectsContainer}>
-                            {tilesView}
-                        </div>
+                <div style={{height: "fit-content"}}>
+                    <h1 className={styles.writings}>{`${Math.round(displayProgress)}%`}</h1>
+                </div>
+            </div>
+            <div>
+                <div className={styles.loadingBar} style={{
+                    width: `${barWidth}px`,
+                    height: `${tileWidth}px`
+                }}>
+                    <div className={styles.pacman} style={{
+                        width: `${tileWidth}px`,
+                        height: `${tileWidth}px`,
+                        backgroundSize: `${894 * scale}px ${960 * scale}px`,
+                        backgroundPositionX: `-${pacmanFrames[currentFrame] * frameWidth * scale}px`,
+                        left: `${barWidth * displayProgress/100}px`
+                    }}/>
+                    <div className={styles.objectsContainer}>
+                        {tilesView}
                     </div>
                 </div>
             </div>
         </div>
+    </>
+
+    return (
+        <>
+            <div className={`${styles.loadingScreen} ${!isVisible ? styles.fadeOut : ""}`}>
+                <LoadedModal handleContinue={() => setIsVisible(false)}/>
+            </div>
+            <div className={`${styles.loadingScreen} ${canContinue ? styles.fadeOut : ""}`}>
+                {loadingScreen}
+            </div>
+        </>
     );
 }
 
