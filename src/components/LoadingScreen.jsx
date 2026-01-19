@@ -5,6 +5,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import sprites from '../data/sprites.json';
 import { useSceneStore } from '../stores/SceneStore';
 import LoadedModal from './LoadedModal';
+import { useAppStore } from '../stores/AppStore';
 
 const fruitIds = [2, 3, 4, 5, 6];
 const ghostIds = [7, 8, 9, 10];
@@ -17,7 +18,7 @@ const fruits = {min: 1, max: 3};
 
 function LoadingScreen() {
     const { totalProgress , isComplete } = useAssetManagerContext();
-    
+    const { isFirstVisit } = useAppStore();
     const loadingText = "Bringing code to life...";
     const [loadingTextTick, setLoadingTextTick] = useState(0);
     const [canContinue, setCanContinue] = useState(false);
@@ -110,7 +111,12 @@ function LoadingScreen() {
 
     useEffect(() => {
         if (isComplete && displayProgress >= 100) {
-            setCanContinue(true);
+            if (isFirstVisit) {
+                setCanContinue(true);
+            } else {
+                setIsVisible(false);
+                setCanContinue(true);
+            }
         }
     }, [displayProgress, isComplete]);
 

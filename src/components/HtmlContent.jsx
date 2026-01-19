@@ -10,6 +10,7 @@ import { useRouteStore } from "../stores/RouteStore";
 import EditProjectsPage from "../pages/EditProjectsPage";
 import AdminCurtain from "./AdminCurtain";
 import GitHubPage from "../pages/GitHubPage";
+import { useAppStore } from "../stores/AppStore";
 
 const routes = {
   0: {
@@ -57,6 +58,7 @@ const routes = {
 };
 
 function HtmlContent({ initSection, restOfTheRoute }) {
+  const { isFirstVisit } = useAppStore();
   const prevCartridgeId = useRef(null);
   const isInit = prevCartridgeId.current === null;
   const route = useRouteStore((s) => s.route);
@@ -69,18 +71,23 @@ function HtmlContent({ initSection, restOfTheRoute }) {
   const isAdminPage = cartridgeId === 2; 
 
   useEffect(() => {
-    if (!cartridgeRoutes) {}
+    if (!cartridgeRoutes) {
+      if (isInit && isFirstVisit) {
+        navigate(`/main/experiences`);
+        console.log("first", initSection);
+      }
+    }
     else if (isInit && !!cartridgeRoutes.routes[initSection]) {
       navigate(`/${cartridgeRoutes.base}/${initSection}/${restOfTheRoute}`);
       console.log("init", initSection);
-    } 
+    }
     else if (prevCartridgeId.current !== cartridgeId) {
       const defaultSection = cartridgeRoutes && Object.keys(cartridgeRoutes.routes)[0];
       navigate(`/${cartridgeRoutes.base}/${defaultSection}`);
       console.log("default", defaultSection);
     }
     prevCartridgeId.current = cartridgeId;
-  }, [cartridgeId, cartridgeRoutes, initSection, isInit, navigate]);
+  }, [cartridgeId, cartridgeRoutes, initSection, isFirstVisit, isInit, navigate, restOfTheRoute]);
 
   useEffect(() => {
     if (!cartridgeRoutes) return;

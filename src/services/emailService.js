@@ -1,5 +1,11 @@
-import { genericPost } from "./httpClient";
+import { adminFetch, genericPost } from "./httpClient";
 
 export const emailService = {
-    sendEmail: async (email) => genericPost(`contact/email`, email)
+    public: {
+        sendMessage: async (email) => genericPost(`contact/messages`, email)
+    },
+
+    admin: {
+        create: async () =>  await adminFetch("admin/contact/messages").get()
+    }
 }

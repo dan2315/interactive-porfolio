@@ -116,7 +116,7 @@ const { cartridge, section, "*": rest } = useParams();
           </Suspense>
         </Canvas>
         <LoadingScreen />
-        <Assistant text={"Need help? Lorum ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text ipsum text "} />
+        <Assistant />
       </AssetManagerProvider>
     </>
   );

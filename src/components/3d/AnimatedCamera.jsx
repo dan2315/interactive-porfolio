@@ -6,6 +6,7 @@ import { BezierHelper, ControlPointHelper } from "../dev/3d/DebugHelpers";
 import { useInputStore } from "../../stores/InputStores";
 import { assistant } from "../../stores/AssistantStore";
 import { scrollNearestAncestor } from "../../utils/customScroll";
+import { useAppStore } from "../../stores/AppStore";
 
 const CAMERA_VIEWS = {
   initial:  new THREE.CubicBezierCurve3(
@@ -28,6 +29,7 @@ const MOUSE_SENSITIVITY = 0.002;
 const TOUCH_SENSITIVITY = 0.004;
 
 function ControlledCamera({ view, debug }) {
+  const { isFirstVisit } = useAppStore();
   const { camera } = useThree();
   const { getOwner: owner, claim, release } = useInputStore();
 
@@ -205,14 +207,16 @@ function ControlledCamera({ view, debug }) {
 
     if (!hasReachedEnd.current && 1 - progress.current < 0.01) {
       hasReachedEnd.current = true;
-      assistant.say({
-        text: "Ohh... Looks like you tried to scroll the page. Use Alt + Wheel to scroll instead of zooming. Additionally you can press Shift to scroll faster.",
-        timeToDisappear: 10000
-      })
-      assistant.say({
-        text: "Did you know? You can swap the cartridge in the console to explore more content. Just drag a new one in!",
-        timeToDisappear: 10000
-      })
+      if (isFirstVisit) {
+        assistant.say({
+          text: "Ohh... Looks like you tried to scroll the page. Use Alt + Wheel to scroll instead of zooming. Additionally you can press Shift to scroll faster.",
+          timeToDisappear: 10000
+        })
+        assistant.say({
+          text: "Did you know? You can swap the cartridge in the console to explore more content. Just drag a new one in!",
+          timeToDisappear: 10000
+        })
+      }
     }
   })
 
