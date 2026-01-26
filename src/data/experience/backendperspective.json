@@ -1,47 +1,64 @@
 {
   "experiences": [
     {
-      "title": "Backend / Full-stack Engineer",
+      "title": "C# / .NET Backend Engineer",
       "company": "Galaxy Sciences",
-      "employmentType": "Part-time",
-      "startDate": "Apr 2025",
-      "endDate": "Oct 2025",
-      "duration": "7 months",
+      "employmentType": "Full-time",
+      "startDate": "Oct 2024",
+      "endDate": "Dec 2025",
+      "duration": "1 year 3 months",
       "location": "Remote",
       "technologies": [
-        "REST APIs",
+        "C#",
+        ".NET",
+        "ASP.NET",
+        "PostgreSQL",
         "Supabase",
-        "PostgreSQL"
+        "Keycloak",
+        "JWT",
+        "SignalR",
+        "Blazor",
+        "Docker"
       ],
       "highlights": [
-        "Designed backend architecture for a narrative-driven web application",
-        "Defined REST API contracts for content management and real-time features",
-        "Designed data models and Supabase setup including PostgreSQL, authentication, and storage",
-        "Collaborated with designers to define backend requirements and internal tools"
+        "Designed and implemented backend architecture for a web application using ASP.NET",
+        "Developed REST APIs and participated in data schema and business logic design",
+        "Implemented authentication and authorization using self-hosted Keycloak with JWT and role-based access control",
+        "Built a real-time chat module with personal and group dialogs using SignalR and paginated API loading",
+        "Designed and implemented a flexible Reigns-style card game module with branching logic, conditions, and consequences",
+        "Developed a Blazor-based editor application for managing game content and administrative data",
+        "Set up automated deployment workflows using shell and batch scripts, Docker image builds, and container orchestration on a virtual machine"
       ]
     },
     {
-      "title": "Backend & Infrastructure Engineer",
+      "title": "C# / .NET Backend & Infrastructure Engineer",
       "company": "Unreal Frontiers Project",
       "employmentType": "Self-employed",
-      "startDate": "Jun 2024",
-      "endDate": "Jul 2025",
-      "duration": "1 year 2 months",
+      "startDate": "Sep 2022",
+      "endDate": "Oct 2024",
+      "duration": "2 years 2 months",
       "location": "Remote",
       "technologies": [
+        "C#",
         ".NET",
-        "Node.js",
-        "Express"
+        "Redis",
+        "RabbitMQ",
+        "TCP",
+        "Avalonia UI"
       ],
       "highlights": [
-        "Designed and implemented backend services and client infrastructure using .NET and Node.js",
-        "Built authentication flows, session-based logic, and versioning systems",
-        "Integrated backend services with multiple clients including a desktop launcher and game servers"
+        "Designed and implemented backend services and server infrastructure using C# and .NET",
+        "Developed authentication and authorization APIs for game clients",
+        "Built a client file publishing and versioning service with hash-based indexing and full path resolution",
+        "Implemented server-side rendering components in C#",
+        "Developed an in-session game leaderboard using Redis",
+        "Built a TCP gateway server implementing the Minecraft protocol for handshake handling and client redirection with session tokens",
+        "Designed and implemented a game analytics pipeline using RabbitMQ with background workers aggregating session and event data",
+        "Developed a desktop client application using Avalonia UI with backend-managed launch profiles and JVM configuration"
       ]
-    }
-    ,
+    },
     {
-      "title": "Software Engineer",
+      "title": "Unity Developer",
       "company": "Singularity Lab",
       "employmentType": "Full-time",
       "startDate": "Sep 2021",
@@ -51,12 +68,20 @@
       "technologies": [
         "Unity",
         "C#",
-        "Photon Fusion"
+        "Photon Fusion",
+        "Mapbox SDK",
+        "AdMob",
+        "Gadsme",
+        "Solidity"
       ],
       "highlights": [
-        "Developed mobile games in Unity with real-time networking using Photon Fusion",
-        "Implemented backend integrations for game features, monetization, and analytics",
-        "Optimized game systems and asset management to improve runtime performance and reduce memory usage"
+        "Developed and published mobile games on Google Play in a small team of 2–3 developers",
+        "Implemented real-time multiplayer using Photon Fusion with matchmaking and gameplay synchronization",
+        "Integrated Mapbox SDK for location-based mechanics and geospatial interactions",
+        "Implemented monetization systems using AdMob and Gadsme",
+        "Worked on UI layout, asset optimization, and Play Market publishing",
+        "Developed an experimental GTA V mod with in-game blockchain transactions using NFTs",
+        "Learned and applied Solidity for smart contract development"
       ]
     }
   ]

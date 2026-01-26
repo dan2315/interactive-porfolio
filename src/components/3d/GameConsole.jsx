@@ -6,6 +6,7 @@ import { useConsoleStore } from "../../stores/GameConsoleStore";
 import { useRouteStore } from "../../stores/RouteStore";
 import models from "../../data/models.json"
 import { ModifiedSelect } from "./SelectionAPI";
+import { analytics } from "../../services/analytics";
 
 
 function GameConsole({ position, rotation, ...props }) {
@@ -100,6 +101,7 @@ function GameConsole({ position, rotation, ...props }) {
         setCartridge(cartridge) {
           cartridgeRef.current = cartridge;
           setCartridgeId(cartridge.getId());
+          analytics.sendCartridgeInserted(cartridge);
         },
 
         isCartridgeInserted() {

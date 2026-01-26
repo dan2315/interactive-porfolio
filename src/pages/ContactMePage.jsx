@@ -3,6 +3,7 @@ import styles from "./ContactMePage.module.css"
 import { FaDiscord, FaLinkedinIn, FaTelegramPlane } from "react-icons/fa"
 import { emailService } from "../services/emailService";
 import PageLoading from './PageLoading';
+import { analytics } from "../services/analytics";
 
 const socialNetworks = [
     {
@@ -41,6 +42,7 @@ function ContactMePage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        analytics.sendContactAttempt({ source: "SendMessage" });
         try {
             const response = await emailService.public.sendMessage({
                 from: emailForm.from,
@@ -124,7 +126,10 @@ function ContactMePage() {
         <div className={styles.yetAnotherContainer}>
             <h3>You can reach me on:</h3>
             {socialNetworks.map(s => {
-                return <div className={styles.snButton} onClick={() => window.open(s.link, "_blank", "noopener,noreferrer")}>
+                return <div className={styles.snButton} onClick={() => {
+                        analytics.sendContactAttempt({ source: s.name });
+                        window.open(s.link, "_blank", "noopener,noreferrer");
+                    }}>
                         {s.name} {s.icon}
                     </div>
             })}

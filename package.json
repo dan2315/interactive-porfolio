@@ -5,6 +5,7 @@
   "dependencies": {
     "@fontsource/fira-code": "^5.2.7",
     "@fontsource/montserrat": "^5.2.8",
+    "@microsoft/signalr": "^10.0.0",
     "@react-spring/three": "^10.0.3",
     "@react-spring/web": "^10.0.3",
     "@react-three/drei": "^10.7.7",
@@ -16,6 +17,7 @@
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "d3": "^7.9.0",
     "emoji-picker-react": "^4.16.1",
     "motion": "^12.23.25",
     "postprocessing": "^6.38.2",

@@ -1,0 +1,102 @@
+[
+  {
+    "sessionId": "long-session-1",
+    "startTime": "2026-01-01T00:00:00.000Z",
+    "endTime": "2026-01-01T23:59:00.000Z",
+    "pagesViewed": 200,
+    "cartridgesInserted": 50,
+    "contactAttempted": 10,
+    "totalTimeMs": 86340000,
+    "additionalData": null
+  },
+  {
+    "sessionId": "259cfb5e-1ce3-4a36-9e50-96bd1f9102b8",
+    "startTime": "2026-01-01T00:00:00.000Z",
+    "endTime": "2026-01-01T00:18:37.000Z",
+    "pagesViewed": 0,
+    "cartridgesInserted": 0,
+    "contactAttempted": 0,
+    "totalTimeMs": 97000,
+    "additionalData": null
+  },
+  {
+    "sessionId": "b7f1eadb-c66f-4de1-b5a7-29f72c1b01d1",
+    "startTime": "2026-01-01T01:00:00.000Z",
+    "endTime": "2026-01-01T02:03:20.000Z",
+    "pagesViewed": 31,
+    "cartridgesInserted": 12,
+    "contactAttempted": 2,
+    "totalTimeMs": 3740698,
+    "additionalData": null
+  },
+  {
+    "sessionId": "7da98f1a-3e1c-48b8-bc64-447d5bee8082",
+    "startTime": "2026-01-01T01:30:00.000Z",
+    "endTime": "2026-01-01T01:48:10.000Z",
+    "pagesViewed": 71,
+    "cartridgesInserted": 13,
+    "contactAttempted": 2,
+    "totalTimeMs": 1096265,
+    "additionalData": null
+  },
+  {
+    "sessionId": "be5f062e-45ba-44e4-ab83-4506ed881ff0",
+    "startTime": "2026-01-01T03:00:00.000Z",
+    "endTime": "2026-01-01T04:00:00.000Z",
+    "pagesViewed": 3,
+    "cartridgesInserted": 1,
+    "contactAttempted": 0,
+    "totalTimeMs": 621,
+    "additionalData": null
+  },
+  {
+    "sessionId": "f23af232-f2e8-42a6-b042-bd75a6cfc07a",
+    "startTime": "2026-01-01T04:10:00.000Z",
+    "endTime": "2026-01-01T06:00:00.000Z",
+    "pagesViewed": 0,
+    "cartridgesInserted": 0,
+    "contactAttempted": 0,
+    "totalTimeMs": 7200000,
+    "additionalData": null
+  },
+  {
+    "sessionId": "b37e7b94-0f80-4c49-8cfc-7bd0dea35fe4",
+    "startTime": "2026-01-01T05:30:00.000Z",
+    "endTime": "2026-01-01T06:30:30.000Z",
+    "pagesViewed": 8,
+    "cartridgesInserted": 2,
+    "contactAttempted": 2,
+    "totalTimeMs": 4440130,
+    "additionalData": null
+  },
+  {
+    "sessionId": "a1070743-3286-4243-b49b-e908aa11dee5",
+    "startTime": "2026-01-01T06:15:00.000Z",
+    "endTime": "2026-01-01T07:15:00.000Z",
+    "pagesViewed": 19,
+    "cartridgesInserted": 12,
+    "contactAttempted": 2,
+    "totalTimeMs": 3600000,
+    "additionalData": null
+  },
+  {
+    "sessionId": "e95e1a3a-21e5-4d1b-841b-0c9ef7799f4f",
+    "startTime": "2026-01-01T00:30:00.000Z",
+    "endTime": "2026-01-01T00:47:00.000Z",
+    "pagesViewed": 14,
+    "cartridgesInserted": 19,
+    "contactAttempted": 0,
+    "totalTimeMs": 974457,
+    "additionalData": null
+  },
+  {
+    "sessionId": "80fd6e17-56c5-4d29-aa25-d527fc82c819",
+    "startTime": "2026-01-01T00:15:00.000Z",
+    "endTime": "2026-01-01T00:34:00.000Z",
+    "pagesViewed": 8,
+    "cartridgesInserted": 1,
+    "contactAttempted": 0,
+    "totalTimeMs": 1121323,
+    "additionalData": null
+  }
+]

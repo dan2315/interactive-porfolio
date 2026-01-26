@@ -1,6 +1,7 @@
 .pageContainer {
     padding-left: 300px;
     padding-right: 300px;
+    overflow-y: scroll;
 }
 
 .experiencesRow {

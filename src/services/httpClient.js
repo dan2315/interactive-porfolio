@@ -1,6 +1,6 @@
 import { useAdminStore } from "../stores/AdminStore";
 
-const baseAddress = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:5250";
+const baseAddress = process.env.REACT_APP_BACKEND_URL ?? "http://localhost:8080";
 
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${baseAddress}/${path}`, {
@@ -109,4 +109,4 @@ function genericPost(path, body = undefined) {
   });
 }
 
-export { genericGet, genericPost, adminFetch };
+export { genericGet, genericPost, adminFetch, baseAddress };

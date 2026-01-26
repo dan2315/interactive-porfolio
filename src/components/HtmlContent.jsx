@@ -11,6 +11,8 @@ import EditProjectsPage from "../pages/EditProjectsPage";
 import AdminCurtain from "./AdminCurtain";
 import GitHubPage from "../pages/GitHubPage";
 import { useAppStore } from "../stores/AppStore";
+import { analytics } from "../services/analytics";
+import AnalyticsPage from "../pages/AnalyticsPage/AnalyticsPage";
 
 const routes = {
   0: {
@@ -42,6 +44,10 @@ const routes = {
       github: {
         name: "GitHub",
         element: <GitHubPage />,
+      },
+      analytics: {
+        name: "Live Analytics",
+        element: <AnalyticsPage />,
       },
     },
   },
@@ -89,11 +95,17 @@ function HtmlContent({ initSection, restOfTheRoute }) {
     prevCartridgeId.current = cartridgeId;
   }, [cartridgeId, cartridgeRoutes, initSection, isFirstVisit, isInit, navigate, restOfTheRoute]);
 
-  useEffect(() => {
+useEffect(() => {
     if (!cartridgeRoutes) return;
-    setPage(cartridgeRoutes.routes[section]?.element);
+
+    const currentElement = cartridgeRoutes.routes[section]?.element;
+    setPage(currentElement);
     setSelectedSection(section);
-  }, [cartridgeRoutes, section, route])
+
+    if (currentElement) {
+        analytics.sendPageView();
+    }
+}, [cartridgeRoutes, section, route]);
 
   if (cartridgeId == null) return <IdleScreen />;
   
@@ -108,3 +120,4 @@ function HtmlContent({ initSection, restOfTheRoute }) {
 }
 
 export default HtmlContent;
+export { routes };
