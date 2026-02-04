@@ -1,15 +1,29 @@
 import { routes } from "../components/HtmlContent";
 import { getSessionId } from "../utils/session";
 import { baseAddress, genericGet, genericPost } from "./httpClient";
+import * as signalR from "@microsoft/signalr";
 
 let pageStartTimestamp = {
     page: "",
     value: null
 };
 
+let connection;
+
 export const analytics = {
     getLiveAnalytics: () => {
         return genericGet("analytics/live/sessions");
+    },
+    connectToEventsPipe: () => {
+        if (!connection) {
+            connection = new signalR.HubConnectionBuilder()
+                .withUrl(baseAddress+"/analytics/live/sessions-sr")
+                .withAutomaticReconnect()
+                .configureLogging(signalR.LogLevel.Information)
+                .build();
+        }
+
+        return connection;
     },
     sendPageView: (additionalData = {}) => {
         const route = window.location.pathname;

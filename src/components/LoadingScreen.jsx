@@ -1,7 +1,7 @@
 import styles from './LoadingScreen.module.css';
 import { useAssetManagerContext } from '../contexts/AssetManagerContext';
 import { randomInt } from '../utils/random';
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import sprites from '../data/sprites.json';
 import { useSceneStore } from '../stores/SceneStore';
 import LoadedModal from './LoadedModal';
@@ -25,6 +25,7 @@ function LoadingScreen() {
     const [isVisible, setIsVisible] = useState(true);
     const [displayProgress, setDisplayProgress] = useState(0);
     const [tileProgress, setTileProgress] = useState(0);
+    const rafRef = useRef(null);
 
     const pacmanFrames = [0, 1, 2, 1];
     const frameWidth = 64;
@@ -88,12 +89,15 @@ function LoadingScreen() {
     }, [])
 
     useEffect(() => {
-        let rafId;
         const targetProgress = totalProgress;
         const step = () => {
             setDisplayProgress(prev => {
                 const diff = Math.min(targetProgress - prev, 33);
-                if (Math.abs(diff) < 0.1) return targetProgress;
+                if (Math.abs(diff) < 0.1) {
+                    cancelAnimationFrame(rafRef.current);
+                    rafRef.current = null;
+                    return targetProgress;
+                }
                 const res = prev + diff * 0.1;
                 setTileProgress(tp => {
                     const cur = Math.ceil(res / 100 * tiles);
@@ -101,12 +105,12 @@ function LoadingScreen() {
                 });
                 return res;
             });
-            rafId = requestAnimationFrame(step);
+            rafRef.current = requestAnimationFrame(step);
         };
 
-        rafId = requestAnimationFrame(step);
+        rafRef.current = requestAnimationFrame(step);
 
-        return () => cancelAnimationFrame(rafId);
+        return () => cancelAnimationFrame(rafRef.current);
     }, [totalProgress]);
 
     useEffect(() => {
@@ -115,6 +119,8 @@ function LoadingScreen() {
                 setCanContinue(true);
             } else {
                 setIsVisible(false);
+                cancelAnimationFrame(rafRef.current);
+                rafRef.current = null;
                 setCanContinue(true);
             }
         }

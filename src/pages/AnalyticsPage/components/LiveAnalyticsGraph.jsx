@@ -50,16 +50,13 @@ function LiveAnalyticsGraph({ sessionsData, timeRange }) {
     }));
 
     const packed = assignLanes(sessions);
-    console.log("Data", packed)
-    const height = 200;
+    const height = 300;
 
     const referenceTime = new Date();
     const [startMin, endMin] = timeRange;
 
     const domainStart = new Date(referenceTime.getTime() - startMin * 60_000);
     const domainEnd = new Date(referenceTime.getTime() - endMin * 60_000);
-
-    console.log(domainStart, domainEnd)
 
     const x = d3
       .scaleTime()
@@ -72,7 +69,6 @@ function LiveAnalyticsGraph({ sessionsData, timeRange }) {
       .range([0, height])
       .paddingInner(0.15);
 
-    console.log((startMin-endMin)/10)
     const xAxis = d3
       .axisBottom(x)
       .ticks(d3.timeMinute.every((endMin-startMin)/10))
@@ -120,7 +116,7 @@ function LiveAnalyticsGraph({ sessionsData, timeRange }) {
     }
 
     xAxisGroup
-      .attr("transform", `translate(0, ${height-30})`)
+      .attr("transform", `translate(0, ${height-20})`)
       .call(xAxis);
   };
 

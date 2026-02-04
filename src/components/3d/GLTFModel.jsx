@@ -1,12 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useAssetManagerContext } from '../../contexts/AssetManagerContext';
 import { loadGLTF } from '../../utils/gltfLoader';
-import * as THREE from "three"
-import { Outlines } from '@react-three/drei';
-import { Select } from '@react-three/postprocessing';
+import * as THREE from "three";
+import { useThree } from '@react-three/fiber';
 
 function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props }) {
   const [model, setModel] = useState(null);
+  const { scene, camera } = useThree();
   const { registerAsset, updateAssetProgress, setAssetLoaded, setAssetError } = useAssetManagerContext();
   const registered = useRef(false);
   const loaded = useRef(false);
@@ -76,9 +76,7 @@ function GLTFModel({ id, url, contentLength, onLoad, outlineEnabled, ...props })
 
 
   return model && !props.hide ? <>
-  <Select>
     <primitive object={model} {...props} />
-    </Select>
   </> : null;
 }
 

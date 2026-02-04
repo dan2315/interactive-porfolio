@@ -23,6 +23,7 @@ import ResetButton from "./3d/ResetButton";
 import { ModifiedSelect, ModifiedSelection } from "./3d/SelectionAPI";
 import InteractiveGLTFModel from "./3d/InteractiveGLTFModel";
 import Assistant from "./Assistant";
+import { Prewarm } from "./3d/Prewarm";
 
 
 function Scene() {
@@ -61,47 +62,48 @@ const { cartridge, section, "*": rest } = useParams();
             <DirectionalLight/>
             <SkyBox/>
             <WaterSurface/>
+            <Prewarm/>
 
             <Physics gravity={[0, -9.81, 0]}>
               <GLTFModel id="greenHill" url={models.scene.path} contentLength={models.scene.contentLength}/>
               <GameConsole position={[-31.8, 4.71, 7.15]} rotation={[0, -1, 0]}/>
-               <Cartridge type={CartridgeType.main}
-                active = {activeCartridge === "main"}
-                visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.8, 5.07, 7.3]}
-                colliderSize = {[0.15, 0.025, 0.17]}
-                />
-                <Cartridge type={CartridgeType.additional}
-                active = {activeCartridge === "additional"}
-                visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.8, 4.97, 7.3]}
-                colliderSize = {[0.15, 0.025, 0.17]}
-                />
-                <Cartridge type={CartridgeType.admin}
-                active = {activeCartridge === "admin"}
-                visualOffset = {[0, 0, 0.06]} 
-                initialPosition = {[-32.8, 4.87, 7.3]}
-                colliderSize = {[0.15, 0.025, 0.17]}
-                />
-               <InteractiveGLTFModel
-                id={"cup"}
-                url={models.cup.path}
-                contentLength={models.cup.contentLength}
-                initialPosition={[-32.5, 5, 7.7]}
-                visualOffset = {[0, -0.09, 0]} 
-                colliderSize = {[0.12, 0.1]}
-                colliderType={"cylinder"}
-                />
-                <InteractiveGLTFModel
-                id={"duck"}
-                url={models.duck.path}
-                contentLength={models.duck.contentLength}
-                initialPosition={[-34.2, 5, 5.8]}
-                colliderSize = {[0.1, 0.1, 0.1]}
-                visualOffset = {[0, -0.09, 0]} 
-                />
-               <ResetButton/>
-              <BoxColliders/>
+              <Cartridge type={CartridgeType.main}
+              active = {activeCartridge === "main"}
+              visualOffset = {[0, 0, 0.06]} 
+              initialPosition = {[-32.8, 5.07, 7.3]}
+              colliderSize = {[0.15, 0.025, 0.17]}
+              />
+              <Cartridge type={CartridgeType.additional}
+              active = {activeCartridge === "additional"}
+              visualOffset = {[0, 0, 0.06]} 
+              initialPosition = {[-32.8, 4.97, 7.3]}
+              colliderSize = {[0.15, 0.025, 0.17]}
+              />
+              <Cartridge type={CartridgeType.admin}
+              active = {activeCartridge === "admin"}
+              visualOffset = {[0, 0, 0.06]} 
+              initialPosition = {[-32.8, 4.87, 7.3]}
+              colliderSize = {[0.15, 0.025, 0.17]}
+              />
+              <InteractiveGLTFModel
+              id={"cup"}
+              url={models.cup.path}
+              contentLength={models.cup.contentLength}
+              initialPosition={[-32.5, 5, 7.7]}
+              visualOffset = {[0, -0.09, 0]} 
+              colliderSize = {[0.12, 0.1]}
+              colliderType={"cylinder"}
+              />
+              <InteractiveGLTFModel
+              id={"duck"}
+              url={models.duck.path}
+              contentLength={models.duck.contentLength}
+              initialPosition={[-34.2, 5, 5.8]}
+              colliderSize = {[0.1, 0.1, 0.1]}
+              visualOffset = {[0, -0.09, 0]} 
+              />
+              <ResetButton/>
+            <BoxColliders/>
             </Physics>
 
             <Html3d
